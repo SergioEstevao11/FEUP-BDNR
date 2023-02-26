@@ -1,0 +1,16 @@
+version: "3"
+services:
+  janusgraph:
+    image: janusgraph/janusgraph:latest
+    ports:
+      - "8182:8182"
+    volumes:
+      #put the configurations to use
+    container_name: "janusgraph"
+  # gremlin-server:
+  #   image: tinkerpop/gremlin-server:latest
+  #   ports:
+  #     - "8300:8300"
+  #   volumes:
+  #     #put the configurations to use
+  #   container_name: "gremlin"
