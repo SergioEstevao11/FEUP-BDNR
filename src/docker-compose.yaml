@@ -1,16 +1,9 @@
 version: "3"
 services:
   janusgraph:
-    image: janusgraph/janusgraph:latest #change to a fixed version
+    image: janusgraph/janusgraph:0.6.3 #change to a fixed version
     ports:
       - "8182:8182"
     volumes:
       -  "./configs/janusgraph:/etc/opt/janusgraph:ro"
-    container_name: "janusgraph"
-  # gremlin-server:
-  #   image: tinkerpop/gremlin-server:latest
-  #   ports:
-  #     - "8300:8300"
-  #   volumes:
-  #     #put the configurations to use
-  #   container_name: "gremlin"
+    container_name: "janusgraph-default"
