@@ -2,6 +2,7 @@ import pandas as pd
 import argparse
 
 FINAL_FOLDER = "./processed_data/"
+RAW_FOLDER = "./raw_data/"
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -13,7 +14,7 @@ def parse_args():
     return args
 
 def parse_related_to():
-    families = pd.read_csv("./families.csv")
+    families = pd.read_csv(RAW_FOLDER + "families.csv")
     families = families.loc[:, ~families.columns.str.contains('^Unnamed')]
     families_processed = pd.DataFrame(columns=["father", "mother", "child"])
     for index, row in families.iterrows():
@@ -37,8 +38,8 @@ def parse_related_to():
     families_processed.to_csv(FINAL_FOLDER + "families_processed.csv", index=False)
 
 def parse_royals():
-    royals = pd.read_csv("./master_data/Shortest Path Death Covariates.csv")
-    royals_date = pd.read_csv("./dates.csv")
+    royals = pd.read_csv(RAW_FOLDER + "master_data/Shortest Path Death Covariates.csv")
+    royals_date = pd.read_csv(RAW_FOLDER + "dates.csv")
     #export a csv with the following attributes: id, name, year_birth, year_death, dinasty
     royals_processed = pd.DataFrame(columns=["id", "name", "year_birth", "year_death", "dinasty"])
     for index, row in royals.iterrows():
@@ -56,7 +57,7 @@ def parse_ruled():
     pass
 
 def parse_countries():
-    rulers = pd.read_csv("./master_data/Ruler+Adjacency.csv")
+    rulers = pd.read_csv(RAW_FOLDER + "master_data/Ruler+Adjacency.csv")
     countries_processed = pd.DataFrame(columns=["id", "name", "religion", "capital", "capital_latitude", "capital_longitude"])
     countries = dict()
     for index, row in rulers.iterrows():
@@ -82,7 +83,7 @@ def parse_participated_in():
     pass
 
 def parse_conflicts():
-    conflicts = pd.read_csv("./master_data/Final War Dyads.csv")
+    conflicts = pd.read_csv(RAW_FOLDER + "master_data/Final War Dyads.csv")
     conflicts_processed = pd.DataFrame(columns=["id", "year", "type"])
     conflict_types={
         "B": "Balance of Power",
@@ -102,11 +103,11 @@ def parse_conflicts():
     conflicts_processed.to_csv(FINAL_FOLDER + "conflicts_processed.csv", index=False)
 
 
-def parse_part_off():
+def parse_part_of():
     pass
 
 def parse_war():
-    wars = pd.read_csv("./master_data/Deaths at War Level.csv")
+    wars = pd.read_csv(RAW_FOLDER + "master_data/Deaths at War Level.csv")
     wars_processed = pd.DataFrame(columns=["id", "name", "year_start", "deaths"])
 
     for index, row in wars.iterrows():
@@ -128,7 +129,6 @@ def parse_war():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--all", action='store_true', required=False)
-    parser.add_argument("--families", action='store_true', required=False)
     parser.add_argument("--final_folder", action='store_true', required=False)
     parser.add_argument("--royals", action='store_true', required=False)
     parser.add_argument("--countries", action='store_true', required=False)
@@ -139,17 +139,27 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+
+#TODO: add all the brecke war names to the wars_processed.csv: make "name" a list of names
+#TODO: finish missing edge parsers
+
 if __name__ == "__main__":
     args = parse_args()
-    if args.families or args.all:
-        parse_related_to()
     if args.royals or args.all:
         parse_royals()
+        print("[SUCCESS] Royals parsed")
     if args.countries or args.all:
         parse_countries()
+        print("[SUCCESS] Countries parsed")
     if args.conflicts or args.all:
         parse_conflicts()
+        print("[SUCCESS] Conflicts parsed")
     if args.wars or args.all:
         parse_war()
+        print("[SUCCESS] Wars parsed")
     if args.edges or args.all:
+        parse_related_to()
         parse_ruled()
+        parse_participated_in()
+        parse_part_of()
+        print("[SUCCESS] Edges parsed")
