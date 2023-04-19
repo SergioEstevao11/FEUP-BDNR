@@ -36,6 +36,26 @@ def parse_families():
 
     families_processed.to_csv(FINAL_FOLDER + "families_processed.csv", index=False)
 
+def parse_royals():
+    pass
+
+def parse_ruled():
+    pass
+
+def parse_countries():
+    pass
+
+def parse_participated_in():
+    pass
+
+def parse_conflicts():
+    pass
+
+def parse_part_off():
+    pass
+
+def parse_war():
+    pass
 
 if __name__ == "__main__":
     args = parse_args()
