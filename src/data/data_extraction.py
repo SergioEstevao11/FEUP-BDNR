@@ -37,7 +37,20 @@ def parse_families():
     families_processed.to_csv(FINAL_FOLDER + "families_processed.csv", index=False)
 
 def parse_royals():
-    pass
+    royals = pd.read_csv("./master_data/Shortest Path Death Covariates.csv")
+    royals_date = pd.read_csv("./dates.csv")
+    #export a csv with the following attributes: id, name, year_birth, year_death, dinasty
+    royals_processed = pd.DataFrame(columns=["id", "name", "year_birth", "year_death", "dinasty"])
+    for index, row in royals.iterrows():
+        id = row["Person ID"]
+        name = row["Name"]
+        year_birth = int(royals_date.loc[royals_date["Person ID"] == id, "Birth Year"].values[0])
+        year_death = row["Year of Death"]
+        dinasty = row["Country-Dynasty Association"]
+        new_row = {"id": id, "name": name, "year_birth": year_birth, "year_death": year_death, "dinasty": dinasty}
+        royals_processed = pd.concat([royals_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
+    
+    royals_processed.to_csv(FINAL_FOLDER + "royals_processed.csv", index=False)
 
 def parse_ruled():
     pass
@@ -57,7 +70,20 @@ def parse_part_off():
 def parse_war():
     pass
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--all", action='store_true', required=False)
+    parser.add_argument("--families", action='store_true', required=False)
+    parser.add_argument("--final_folder", action='store_true', required=False)
+    parser.add_argument("--royals", action='store_true', required=False)
+
+    args = parser.parse_args()
+    return args
+
 if __name__ == "__main__":
     args = parse_args()
     if args.families or args.all:
         parse_families()
+    
+    if args.royals or args.all:
+        parse_royals()
