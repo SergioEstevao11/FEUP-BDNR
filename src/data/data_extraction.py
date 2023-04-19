@@ -82,7 +82,25 @@ def parse_participated_in():
     pass
 
 def parse_conflicts():
-    pass
+    conflicts = pd.read_csv("./master_data/Final War Dyads.csv")
+    conflicts_processed = pd.DataFrame(columns=["id", "year", "type"])
+    conflict_types={
+        "B": "Balance of Power",
+        "C": "Civil",
+        "D": "Defensive",
+        "I": "Imperial"
+    }
+    for index, row in conflicts.iterrows():
+        type = row["Wright's type [(B)alance of Power; <C>ivil; (D)efensive; (I)mperial ]"]
+        if type in conflict_types.keys():
+            type = conflict_types[type]
+        else:
+            type = "Other"
+        new_row = {"id": index, "year": row["Year"], "type": type}
+        conflicts_processed = pd.concat([conflicts_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
+
+    conflicts_processed.to_csv(FINAL_FOLDER + "conflicts_processed.csv", index=False)
+
 
 def parse_part_off():
     pass
@@ -97,6 +115,7 @@ def parse_args():
     parser.add_argument("--final_folder", action='store_true', required=False)
     parser.add_argument("--royals", action='store_true', required=False)
     parser.add_argument("--countries", action='store_true', required=False)
+    parser.add_argument("--conflicts", action='store_true', required=False)
     parser.add_argument("--edges", action='store_true', required=False)
 
     args = parser.parse_args()
@@ -110,5 +129,7 @@ if __name__ == "__main__":
         parse_royals()
     if args.countries or args.all:
         parse_countries()
+    if args.conflicts or args.all:
+        parse_conflicts()
     if args.edges or args.all:
         parse_ruled()
