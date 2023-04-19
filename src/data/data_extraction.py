@@ -106,7 +106,24 @@ def parse_part_off():
     pass
 
 def parse_war():
-    pass
+    wars = pd.read_csv("./master_data/Deaths at War Level.csv")
+    wars_processed = pd.DataFrame(columns=["id", "name", "year_start", "deaths"])
+
+    for index, row in wars.iterrows():
+        #check if War Num exists in wars_processed
+        if row["War Num"] not in wars_processed["id"].values:
+            if row["Brecke War Name 1"] == "0":
+                war_name = row["Dyad Sheet War Name"]
+            else:
+                war_name = row["Brecke War Name 1"]
+            new_row = {"id": row["War Num"], "name": war_name, "year_start": row["Brecke Start Year"], "deaths": row["TotalFatal"]}
+            wars_processed = pd.concat([wars_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
+        else:
+            wars_processed.loc[wars_processed["id"] == row["War Num"], "deaths"] += row["TotalFatal"]
+    
+    wars_processed.to_csv(FINAL_FOLDER + "wars_processed.csv", index=False)
+
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -116,6 +133,7 @@ def parse_args():
     parser.add_argument("--royals", action='store_true', required=False)
     parser.add_argument("--countries", action='store_true', required=False)
     parser.add_argument("--conflicts", action='store_true', required=False)
+    parser.add_argument("--wars", action='store_true', required=False)
     parser.add_argument("--edges", action='store_true', required=False)
 
     args = parser.parse_args()
@@ -131,5 +149,7 @@ if __name__ == "__main__":
         parse_countries()
     if args.conflicts or args.all:
         parse_conflicts()
+    if args.wars or args.all:
+        parse_war()
     if args.edges or args.all:
         parse_ruled()
