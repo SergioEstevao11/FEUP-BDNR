@@ -54,7 +54,48 @@ def parse_royals():
     royals_processed.to_csv(FINAL_FOLDER + "royals_processed.csv", index=False)
 
 def parse_ruled():
-    pass
+    rulers = pd.read_csv(RAW_FOLDER + "master_data/Ruler+Adjacency.csv")
+    ruled_processed = pd.DataFrame(columns=["country_id", "person_id", "year_start", "year_end"])
+
+    
+    countries = dict()
+    for index, row in rulers.iterrows():
+        country_id = row["Country ID"]
+        person_id = row["Person ID"]
+
+        #check if the country_id or person_id are digits
+        if not str(country_id).isdigit():
+            continue
+        if not str(person_id).isdigit():
+            continue
+        
+
+        if country_id not in countries.keys():
+            countries[country_id] = {
+                person_id: {
+                    "year_start": row["Rule Start Year"],
+                    "year_end": row["Rule End Year"]
+                }
+            }
+        else:
+            if person_id in countries[country_id].keys():
+                countries[country_id][person_id]["year_end"] = row["Rule End Year"]
+            else:
+                countries[country_id][person_id] = {
+                    "year_start": row["Rule Start Year"],
+                    "year_end": row["Rule End Year"]
+                }
+
+    for country_id in countries.keys():
+        for person_id in countries[country_id].keys():
+            year_start = countries[country_id][person_id]["year_start"]
+            year_end = countries[country_id][person_id]["year_end"]
+            new_row = {"country_id": country_id, "person_id": person_id, "year_start": int(year_start), "year_end": int(year_end)}
+            ruled_processed = pd.concat([ruled_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
+
+    ruled_processed.to_csv(FINAL_FOLDER + "ruled_processed.csv", index=False)
+
+
 
 def parse_countries():
     rulers = pd.read_csv(RAW_FOLDER + "master_data/Ruler+Adjacency.csv")
@@ -158,7 +199,7 @@ if __name__ == "__main__":
         parse_war()
         print("[SUCCESS] Wars parsed")
     if args.edges or args.all:
-        parse_related_to()
+        #parse_related_to()
         parse_ruled()
         parse_participated_in()
         parse_part_of()
