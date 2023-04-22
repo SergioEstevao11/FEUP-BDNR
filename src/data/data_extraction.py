@@ -158,10 +158,21 @@ def parse_conflicts():
 
 
 def parse_part_of():
-    pass
+    wars = pd.read_csv(RAW_FOLDER + "master_data/Deaths at War Level.csv")
+    part_of_processed = pd.DataFrame(columns=["war_id", "conflict_id"])
+
+    for index, row in wars.iterrows():
+        war_id = row["War Num"]
+        conflict_id = index
+
+        new_row = {"war_id": war_id, "conflict_id": conflict_id}
+        part_of_processed = pd.concat([part_of_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
+
+    part_of_processed.to_csv(FINAL_FOLDER + "part_of_processed.csv", index=False)
 
 def parse_war():
     wars = pd.read_csv(RAW_FOLDER + "master_data/Deaths at War Level.csv")
+    conflicts = pd.read_csv(RAW_FOLDER + "master_data/Final War Dyads.csv")
     wars_processed = pd.DataFrame(columns=["id", "name", "year_start", "deaths"])
 
     for index, row in wars.iterrows():
@@ -175,6 +186,14 @@ def parse_war():
             wars_processed = pd.concat([wars_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
         else:
             wars_processed.loc[wars_processed["id"] == row["War Num"], "deaths"] += row["TotalFatal"]
+
+    #Add Wars that don't have conflicts
+
+    # for index, row in conflicts.iterrows():
+    #     if row["War Num (Hard)"] not in wars_processed["id"].values:
+    #         war_name = row["War Names (Wright War Name Listed First If Available)"]
+    #         new_row = {"id": row["War Num (Hard)"], "name": war_name, "year_start": row["Year"], "deaths": "undefined"}
+    #         wars_processed = pd.concat([wars_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
     
     wars_processed.to_csv(FINAL_FOLDER + "wars_processed.csv", index=False)
 
@@ -214,6 +233,6 @@ if __name__ == "__main__":
     if args.edges or args.all:
         #parse_related_to()
         #parse_ruled()
-        parse_participated_in()
+        #parse_participated_in()
         parse_part_of()
         print("[SUCCESS] Edges parsed")
