@@ -16,7 +16,7 @@ def parse_args():
 def parse_related_to():
     families = pd.read_csv(RAW_FOLDER + "families.csv")
     families = families.loc[:, ~families.columns.str.contains('^Unnamed')]
-    families_processed = pd.DataFrame(columns=["father", "mother", "child"])
+    related_with_processed = pd.DataFrame(columns=["father", "mother", "child"])
     for index, row in families.iterrows():
         father = row["Husband"]
         mother = row["Wife"]
@@ -32,10 +32,10 @@ def parse_related_to():
                 mother_proc = int(mother)
             child_proc = int(child)
             new_row = {"father": father_proc, "mother": mother_proc , "child": child_proc }
-            families_processed = pd.concat([families_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
+            related_with_processed = pd.concat([related_with_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
 
 
-    families_processed.to_csv(FINAL_FOLDER + "families_processed.csv", index=False)
+    related_with_processed.to_csv(FINAL_FOLDER + "related_with_processed.csv", index=False)
 
 def parse_royals():
     royals = pd.read_csv(RAW_FOLDER + "master_data/Shortest Path Death Covariates.csv")
@@ -121,7 +121,20 @@ def parse_countries():
     
 
 def parse_participated_in():
-    pass
+    conflicts = pd.read_csv(RAW_FOLDER + "master_data/Final War Dyads.csv")
+
+    participated_in_processed = pd.DataFrame(columns=["conflict_id", "country_id"])
+    for index, row in conflicts.iterrows():
+        conflict_id = index
+        country_id_state1 = row["State 1 ID"]
+        country_id_state2 = row["State 2 ID"]
+
+        new_row = {"conflict_id": conflict_id, "country_id": country_id_state1}
+        participated_in_processed = pd.concat([participated_in_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
+        new_row = {"conflict_id": conflict_id, "country_id": country_id_state2}
+        participated_in_processed = pd.concat([participated_in_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
+
+    participated_in_processed.to_csv(FINAL_FOLDER + "participated_in_processed.csv", index=False)
 
 def parse_conflicts():
     conflicts = pd.read_csv(RAW_FOLDER + "master_data/Final War Dyads.csv")
@@ -200,7 +213,7 @@ if __name__ == "__main__":
         print("[SUCCESS] Wars parsed")
     if args.edges or args.all:
         #parse_related_to()
-        parse_ruled()
+        #parse_ruled()
         parse_participated_in()
         parse_part_of()
         print("[SUCCESS] Edges parsed")
