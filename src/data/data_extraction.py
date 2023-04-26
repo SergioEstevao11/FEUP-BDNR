@@ -187,7 +187,7 @@ def parse_war():
         else:
             wars_processed.loc[wars_processed["id"] == row["War Num"], "deaths"] += row["TotalFatal"]
 
-    #Add Wars that don't have conflicts
+    #Add Wars that don't have conflicts/dyads
 
     # for index, row in conflicts.iterrows():
     #     if row["War Num (Hard)"] not in wars_processed["id"].values:
