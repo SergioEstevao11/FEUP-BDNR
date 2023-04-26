@@ -15,3 +15,7 @@ services:
     user: root
     ports:
       - "5001:80"
+  react-app:
+    build: ./app/NetworkOfThrones
+    ports:
+      - "5173:5173"
