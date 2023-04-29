@@ -9,8 +9,8 @@ const Search = (): JSX.Element => {
   }
 
   return (
-    <form onSubmit={handleSearch} className="flex items-center bg-white border border-gray-200 px-3 py-2 shadow-lg rounded-3xl">
-      <input type="text" className="w-full outline-none bg-white text-gray-900 p-2 text-lg placeholder-gray-400" value={searchTerm}
+    <form onSubmit={handleSearch} className="flex items-center bg-white border border-gray-200 px-3 shadow-lg rounded-3xl">
+      <input type="text" className="w-full outline-none bg-white text-gray-500 p-1 text-lg placeholder-gray-400" value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
       <button type="submit" className="outline-none focus:outline-none">

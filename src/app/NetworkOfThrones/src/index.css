@@ -27,7 +27,7 @@ a {
 }
 
 body {
-  margin: 0;
+  margin: 0em 10em;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -64,4 +64,36 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.multiSelectContainer .searchWrapper{
+  padding-right: 10px;
+  border-radius: 20px;
+}
+
+.multiSelectContainer .searchWrapper .searchBox{
+  padding-left: 10px;
+  border-radius: 20px;
+}
+
+.multiSelectContainer .searchWrapper .chip{
+  background-color: #108768;
+}
+
+.multiSelectContainer .optionListContainer .optionContainer {
+  margin-right: 30px;
+  border-radius: 20px;
+  font-size: 15px;
+}
+
+.multiSelectContainer .optionListContainer .optionContainer .highlightOption {
+  background-color: rgba(16, 135, 104, 1);
+}
+
+.multiSelectContainer .optionListContainer .optionContainer .option:hover {
+  background-color: rgba(107, 114, 128, 0.2);
+}
+
+.multiSelectContainer .optionListContainer .optionContainer .option .input .checkbox{
+  background-color: #108768;
 }
