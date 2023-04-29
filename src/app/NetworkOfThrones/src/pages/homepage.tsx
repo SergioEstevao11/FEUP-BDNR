@@ -8,9 +8,9 @@ import Search from '../components/search';
 export default function HomePage() {
 
     return (
-      <main className='bg-white p-0 sm:mb-20'>
-        <div className='flex-col p-0 sm:m-auto'>
-          <a href='/' className='flex justify-center items-center select-none text-3xl mt-3'>
+      <main className='bg-white p-0 sm:mb-20 m-auto'>
+        <div className='flex flex-col p-0 sm:m-auto justify-center items-center'>
+          <a href='/' className='flex justify-center items-center select-none text-3xl mt-5'>
             <h1> A </h1>
             <h1 className="text-janus font-bold"> Network </h1>
             <h1> Of Thrones</h1>

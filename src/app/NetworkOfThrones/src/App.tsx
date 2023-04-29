@@ -7,13 +7,12 @@ import RoyalPage from './pages/royalpage';
 
 function App() {
 
-
   return (
     <>
      <Router>
       <Routes>
         <Route path="/" element={<HomePage/>} />
-        <Route path="/searchresults/" element={<RoyalPage/>} />
+        <Route path="/royal/:id" element={<RoyalPage/>} />
       </Routes>
     </Router>
     </>
