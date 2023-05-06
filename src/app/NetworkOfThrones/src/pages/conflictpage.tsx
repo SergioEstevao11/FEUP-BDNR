@@ -57,6 +57,42 @@ export default function ConflictPage() {
                   </li>
                 </ul>
               </div>
+              {active === 'table' ?
+                <table className="w-full text-sm text-left text-gray-500">
+                  <thead className="text-white uppercase bg-janus">
+                      <tr>
+                        <th scope="col-6" className="px-6 py-3 text-left">
+                            Name
+                        </th>
+                        <th scope="col-2" className="px-6 py-3 text-center">
+                            Birth Year
+                        </th>
+                        <th scope="col-2" className="px-6 py-3 text-center">
+                            Death Year
+                        </th>
+                        <th scope="col-2" className="px-6 py-3 text-center">
+                            Kinship
+                        </th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          Maria José
+                      </th>
+                      <td className="px-6 py-4 text-center">
+                          2001
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                          nunca sou imortal
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                          Rainha do Mundo
+                      </td>
+                  </tr>
+                  </tbody>
+                </table>
+                : <>ola</>}
             </div>
           </div>
         </div>
