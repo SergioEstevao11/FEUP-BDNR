@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import royal from '../assets/royal.jpg';
 
 import RoyalFilters from '../components/royalfilters'
+import NodeView from '../components/nodeview'
 
 export default function RoyalPage() {
     const { id } = useParams<{ id: string }>();
@@ -102,7 +103,7 @@ export default function RoyalPage() {
                   </tr>
                   </tbody>
                 </table>
-               : <p>ola</p>
+               : <NodeView></NodeView>
                }
             </div>
           </div>

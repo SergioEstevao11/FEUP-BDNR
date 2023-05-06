@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import royal from '../assets/war.jpg';
 
 import ConflictFilters from '../components/conflictfilters'
+import NodeView from '../components/nodeview'
 
 export default function ConflictPage() {
     const { id } = useParams<{ id: string }>();
@@ -92,7 +93,7 @@ export default function ConflictPage() {
                   </tr>
                   </tbody>
                 </table>
-                : <>ola</>}
+                : <NodeView></NodeView>}
             </div>
           </div>
         </div>
