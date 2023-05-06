@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import royal from '../assets/royal.jpg';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 import RoyalFilters from '../components/royalfilters'
 
 export default function RoyalPage() {
     const { id } = useParams<{ id: string }>();
-    const [active, setActive] = useState('graph');
+    const [active, setActive] = useState('table');
 
     return (
       <main className=' w-full bg-white justify-center m-0'>
@@ -56,7 +62,7 @@ export default function RoyalPage() {
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">
                 <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
                   <li className="mr-2" >
-                    <a href="#" className={`inline-flex p-4 border-b-2 rounded-t-lg ${ active === 'table' ? 'border-janus text-janus' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group'}`} onClick={() => setActive('table')} aria-current="page" >
+                    <a href="#table-view" className={`inline-flex p-4 border-b-2 rounded-t-lg ${ active === 'table' ? 'border-janus text-janus' : 'border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group'}`} onClick={() => setActive('table')} aria-current="page" >
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="25" fill="currentColor" className="bi bi-table" viewBox="0 0 16 16"> <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z"/> </svg> 
                     </a>
                   </li>
@@ -67,6 +73,43 @@ export default function RoyalPage() {
                   </li>
                 </ul>
               </div>
+               {active === 'table' ?
+                <table className="w-full text-sm text-left text-gray-500">
+                  <thead className="text-white uppercase bg-janus">
+                      <tr>
+                        <th scope="col-6" className="px-6 py-3 text-left">
+                            Name
+                        </th>
+                        <th scope="col-2" className="px-6 py-3 text-center">
+                            Birth Year
+                        </th>
+                        <th scope="col-2" className="px-6 py-3 text-center">
+                            Death Year
+                        </th>
+                        <th scope="col-2" className="px-6 py-3 text-center">
+                            Kinship
+                        </th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          Maria José
+                      </th>
+                      <td className="px-6 py-4 text-center">
+                          2001
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                          nunca sou imortal
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                          Rainha do Mundo
+                      </td>
+                  </tr>
+                  </tbody>
+                </table>
+               : <p>ola</p>
+               }
             </div>
           </div>
         </div>
