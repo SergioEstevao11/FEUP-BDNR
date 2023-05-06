@@ -21,12 +21,12 @@ export default function HomePage() {
             <div id="search-royals" className="flex flex-col justify-center items-center">
                 <h2 className="text-janus text-5xl font-bold m-5"> Royals </h2>
                 <img className='w-64 h-64 rounded-full object-cover my-5' src={royal} alt="royal" />
-                <Search />
+                <Search label={"Royal"}/>
             </div> 
             <div id="search-countries" className="flex flex-col justify-center items-center">
                 <h2 className="text-janus text-5xl font-bold m-5"> Conflicts </h2>
                 <img className='w-64 h-64 rounded-full object-cover my-5' src={conflict} alt="conflict" />
-                <Search />
+                <Search label={"Conflict"}/>
             </div>
           </div>
         </div>
