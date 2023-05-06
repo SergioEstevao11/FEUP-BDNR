@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import MultiSelect from 'multiselect-react-dropdown';
+import RangeSlider from './range';
 
 const ConflictFilters = (): JSX.Element => {
 
   const [expandedYear, setExpandedYear] = useState<boolean>(false);
-  const [yearValue, setYearValue] = useState(1458); // mudar para o min ano ou o ano a meio da range
+  const [yearValue, setYearValue] = useState([1500,1870]); // mudar para o min ano ou o ano a meio da range
 
   const [expandedCountry, setExpandedCountry] = useState<boolean>(false);
   const optionsCountry = [{name: 'Option 1', value: 'option1'}, {name: 'Option 2', value: 'option2'}, {name: 'Option 3', value: 'option3'}];
@@ -25,10 +26,10 @@ const ConflictFilters = (): JSX.Element => {
   };
 
   const onSelectType = (selectedList : []) => {
-    setSelectedCountry(selectedList);
+    setSelectedType(selectedList);
   }
   const onRemoveType = (selectedList : []) => {
-    setSelectedCountry(selectedList);
+    setSelectedType(selectedList);
   }
   const handleToggleType = () => {
     setExpandedType(!expandedType);
@@ -52,11 +53,8 @@ const ConflictFilters = (): JSX.Element => {
           </svg>
         </button>
       </h2>
-      <div id="conflict-year-body" className={`${expandedYear ? '' : 'hidden'}`} aria-labelledby="conflict-year">
-          <span className="mr-2 text-gray-500 dark:text-white" id="ancestors-step">1458</span>
-          <input id="ancestors-year" type="range" min="1458" max="1912" value={yearValue} className="w-60 px-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" onChange={(event) => setYearValue(Number(event.target.value))} />
-          <span className="ml-2 text-gray-500 dark:text-white" id="ancestors-step">1912</span>
-          <div className='text-janus font-bold'>{yearValue}</div>
+      <div id="conflict-year-body" className={`${expandedYear ? '' : 'hidden'} my-2 mx-10`} aria-labelledby="conflict-year">
+        <RangeSlider year={[1458,1912]} minDistance={50} value={yearValue} setValue={setYearValue}></RangeSlider>
       </div>
       <h2 id="conflict-country">
         <button type="button" className="flex items-center justify-between w-full font-medium text-left text-gray-500  dark:border-gray-700 dark:text-gray-400" data-accordion-target="#rconflict-country-body"

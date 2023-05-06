@@ -1,17 +1,41 @@
 import { useState } from 'react';
 import MultiSelect from 'multiselect-react-dropdown';
+import RangeSlider from './range';
+import Slider from '@mui/material/Slider';
+import { styled } from '@mui/material/styles';
+
+
+const SimpleSlider = styled(Slider)({
+  color: '#108768', 
+  '& .MuiSlider-thumb': {
+    backgroundColor: '#108768', 
+    boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.29)',
+    '&:hover': {
+      boxShadow: '0px 3px 3px rgba(0, 0, 0, 0.29)',
+    },
+  },
+  '& .MuiSlider-valueLabel': {
+    backgroundColor: 'transparent',
+    color: 'inherit',
+    top: 'calc(100% + 36px)',
+    '& > span': {
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  },
+});
 
 const RoyalFilters = (): JSX.Element => {
 
   const [expandedAncestors, setExpandedAncestors] = useState<boolean>(false);
   const [activeAncestors, setActiveAncestors] = useState('generation');
-  const [genAncestorsValue, setGenAncestorsValue] = useState(1);
-  const [yearAncestorsValue, setYearAncestorsValue] = useState(1458); // mudar para o min ano ou o ano a meio da range
+  const [genAncestorsValue, setGenAncestorsValue] = useState<number>(1);
+  const [yearAncestorsValue, setYearAncestorsValue] = useState([1500,1870]); // mudar para o min ano ou o ano a meio da range
 
   const [expandedDescendants, setExpandedDescendants] = useState<boolean>(false);
   const [activeDescendants, setActiveDescendants] = useState('generation');
   const [genDescendantsValue, setGenDescendantsValue] = useState(1);
-  const [yearDescendantsValue, setYearDescendantsValue] = useState(1458); // mudar para o min ano ou o ano a meio da range
+  const [yearDescendantsValue, setYearDescendantsValue] = useState([1500,1870]); // mudar para o min ano ou o ano a meio da range
 
   const [expandedContemporaries, setExpandedContemporaries] = useState<boolean>(false);
   const options = [{name: 'Option 1', value: 'option1'}, {name: 'Option 2', value: 'option2'}, {name: 'Option 3', value: 'option3'}];
@@ -52,15 +76,11 @@ const RoyalFilters = (): JSX.Element => {
       <div id="royal-ancestors-body" className={`${expandedAncestors ? '' : 'hidden'}`} aria-labelledby="royal-ancestors">
         <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeAncestors == 'generation' ? '' : 'opacity-50'}`}  onClick={() => setActiveAncestors('generation')} >By Generation</button>
         <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeAncestors == 'year' ? '' : 'opacity-50'}`}  onClick={() => setActiveAncestors('year')} >By Year</button>
-        <div className={`${activeAncestors == 'generation' ? '' : 'hidden'}`}>
-          <input id="ancestors-step" type="range" min="1" max="3" value={genAncestorsValue} step="1" className="w-60 px-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" onChange={(event) => setGenAncestorsValue(Number(event.target.value))}/>
-          <span className="ml-2 text-janus font-bold dark:text-white" id="ancestors-step">{genAncestorsValue}</span>
+        <div className={`${activeAncestors == 'generation' ? '' : 'hidden'} my-2 mx-10`}>
+          <SimpleSlider defaultValue={1} step={1} marks={[{label:1, value:1},{label:2, value:2},{label:3,value:3}]} min={1} max={3} value={genAncestorsValue} onChange={ (e, val) => setGenAncestorsValue(Array.isArray(val) ? val[0] : val) }  />
         </div>
-        <div className={`${activeAncestors == 'year' ? '' : 'hidden'}`}>
-          <span className="mr-2 text-gray-500 dark:text-white" id="ancestors-step">1458</span>
-          <input id="ancestors-year" type="range" min="1458" max="1912" value={yearAncestorsValue} className="w-60 px-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" onChange={(event) => setYearAncestorsValue(Number(event.target.value))} />
-          <span className="ml-2 text-gray-500 dark:text-white" id="ancestors-step">1912</span>
-          <div className='text-janus font-bold'>{yearAncestorsValue}</div>
+        <div className={`${activeAncestors == 'year' ? '' : 'hidden'} my-2 mx-10`}>
+          <RangeSlider year={[1458,1912]} minDistance={50} value={yearAncestorsValue} setValue={setYearAncestorsValue}></RangeSlider>
         </div>
       </div>
       <h2 id="royal-descendants">
@@ -75,15 +95,11 @@ const RoyalFilters = (): JSX.Element => {
       <div id="royal-descendants-body" className={`${expandedDescendants ? '' : 'hidden'}`} aria-labelledby="royal-ancestors">
         <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeDescendants == 'generation' ? '' : 'opacity-50'}`}  onClick={() => setActiveDescendants('generation')} >By Generation</button>
         <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeDescendants == 'year' ? '' : 'opacity-50'}`}  onClick={() => setActiveDescendants('year')} >By Year</button>
-        <div className={`${activeDescendants == 'generation' ? '' : 'hidden'}`}>
-          <input id="ancestors-step" type="range" min="1" max="3" value={genDescendantsValue} step="1" className="w-60 px-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" onChange={(event) => setGenDescendantsValue(Number(event.target.value))}/>
-          <span className="ml-2 text-janus font-bold dark:text-white" id="ancestors-step">{genDescendantsValue}</span>
+        <div className={`${activeDescendants == 'generation' ? '' : 'hidden'} my-2 mx-10`}>
+          <SimpleSlider defaultValue={1} step={1} value={genAncestorsValue} marks={[{label:1, value:1},{label:2, value:2},{label:3,value:3}]} min={1} max={3} onChange={ (e, val) => setGenDescendantsValue(Array.isArray(val) ? val[0] : val) }  />
         </div>
-        <div className={`${activeDescendants == 'year' ? '' : 'hidden'}`}>
-          <span className="mr-2 text-gray-500 dark:text-white" id="ancestors-step">1458</span>
-          <input id="ancestors-year" type="range" min="1458" max="1912" value={yearDescendantsValue} className="w-60 px-3 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" onChange={(event) => setYearDescendantsValue(Number(event.target.value))} />
-          <span className="ml-2 text-gray-500 dark:text-white" id="ancestors-step">1912</span>
-          <div className='text-janus font-bold'>{yearDescendantsValue}</div>
+        <div className={`${activeDescendants == 'year' ? '' : 'hidden'} my-2 mx-10`}>
+          <RangeSlider year={[1458,1912]} minDistance={50} value={yearDescendantsValue} setValue={setYearDescendantsValue}></RangeSlider>
         </div>
       </div>
       <h2 id="royal-contemporaries">
