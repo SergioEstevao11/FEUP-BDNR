@@ -78,6 +78,9 @@ def main():
 
     g = traversal().with_remote(DriverRemoteConnection(
         'ws://127.0.0.1:8182/gremlin', 'g'))
+
+
+    print(g.V().toList())
     
     royals = upload_vertices(royals,g,"Royals")
 
@@ -97,6 +100,8 @@ def main():
     part_of = upload_edges(part_of,'conflict_id',conflicts,'war_id',wars,g,"part_of",None,None)
 
     
+
+    print(g.V().toList())
     
 
     

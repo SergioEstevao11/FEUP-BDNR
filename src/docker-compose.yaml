@@ -7,6 +7,15 @@ services:
     volumes:
       -  "./configs/janusgraph:/etc/opt/janusgraph:ro"
     container_name: "janusgraph-default"
+    
+    
+  cassandra:
+    image: cassandra:3
+    container_name: jc-cassandra
+    ports:
+      -  "9042:9042"
+      -  "9160:9160"
+    
 
   fastapi-app:
     build: ./app/backend
