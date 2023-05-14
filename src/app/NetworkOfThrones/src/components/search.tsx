@@ -9,14 +9,13 @@ interface SearchProps {
 
 export default function Search({label} : SearchProps) {
   const navigate = useNavigate();
-  const [value, setValue] = React.useState<OptionType | null>(null);
+  const [value] = React.useState<OptionType | null>(null);
   const [options, setOptions] = React.useState<OptionType[]>([]);
 
   React.useEffect(() => {
     const fetchData = async () => {
       const response = label == 'Royal' ? await fetch('http://127.0.0.1:5000/getRoyals') : await fetch('http://127.0.0.1:5000/getCountries');
       const data = await response.json();
-      console.log(data)
       setOptions(data.result);
     };
     fetchData();

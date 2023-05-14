@@ -82,13 +82,13 @@ def main():
 
     print(g.V().toList())
     
-    royals = upload_vertices(royals,g,"Royals")
+    royals = upload_vertices(royals,g,"Royal")
 
-    countries = upload_vertices(countries,g,"Countries")
+    countries = upload_vertices(countries,g,"Country")
 
-    wars = upload_vertices(wars,g,"Wars")
+    wars = upload_vertices(wars,g,"War")
 
-    conflicts = upload_vertices(conflicts,g,"Conflicts")
+    conflicts = upload_vertices(conflicts,g,"Conflict")
 
     fathers = upload_edges(related_with,"child",royals,"father",royals,g,"related_with","type","father")
     mothers = upload_edges(related_with,"child",royals,"mother",royals,g,"related_with","type","mother")

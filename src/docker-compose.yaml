@@ -17,14 +17,14 @@ services:
       -  "9160:9160"
     
 
-  fastapi-app:
-    build: ./app/backend
-    image: fast-api-uvicorn-backend
-    container_name: "bdnr-backend"
-    user: root
-    ports:
-      - "5001:80"
-  react-app:
-    build: ./app/NetworkOfThrones
-    ports:
-      - "6001:3000"
+  # fastapi-app:
+  #   build: ./app/backend
+  #   image: fast-api-uvicorn-backend
+  #   container_name: "bdnr-backend"
+  #   user: root
+  #   ports:
+  #     - "5001:80"
+  # react-app:
+  #   build: ./app/NetworkOfThrones
+  #   ports:
+  #     - "6001:3000"
