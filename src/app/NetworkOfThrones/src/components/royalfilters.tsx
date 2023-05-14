@@ -92,11 +92,11 @@ const RoyalFilters = (): JSX.Element => {
           </svg>
         </button>
       </h2>
-      <div id="royal-descendants-body" className={`${expandedDescendants ? '' : 'hidden'}`} aria-labelledby="royal-ancestors">
+      <div id="royal-descendants-body" className={`${expandedDescendants ? '' : 'hidden'}`} aria-labelledby="royal-descendants">
         <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeDescendants == 'generation' ? '' : 'opacity-50'}`}  onClick={() => setActiveDescendants('generation')} >By Generation</button>
         <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeDescendants == 'year' ? '' : 'opacity-50'}`}  onClick={() => setActiveDescendants('year')} >By Year</button>
         <div className={`${activeDescendants == 'generation' ? '' : 'hidden'} my-2 mx-10`}>
-          <SimpleSlider defaultValue={1} step={1} value={genAncestorsValue} marks={[{label:1, value:1},{label:2, value:2},{label:3,value:3}]} min={1} max={3} onChange={ (e, val) => setGenDescendantsValue(Array.isArray(val) ? val[0] : val) }  />
+          <SimpleSlider defaultValue={1} step={1} value={genDescendantsValue} marks={[{label:1, value:1},{label:2, value:2},{label:3,value:3}]} min={1} max={3} onChange={ (e, val) => setGenDescendantsValue(Array.isArray(val) ? val[0] : val) }  />
         </div>
         <div className={`${activeDescendants == 'year' ? '' : 'hidden'} my-2 mx-10`}>
           <RangeSlider year={[1458,1912]} minDistance={50} value={yearDescendantsValue} setValue={setYearDescendantsValue}></RangeSlider>

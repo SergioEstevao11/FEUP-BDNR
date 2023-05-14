@@ -11,21 +11,22 @@ export default function RoyalPage() {
 
     const [name, setName] = useState('');
     const [title, setTitle] = useState('');
-    const [birthYear, setBirthYear] = useState('ND');
-    const [deathYear, setDeathYear] = useState('ND');
-    const [dinasty, setDinasty] = useState('ND');
-    const [startRuling, setStartRuling] = useState('ND');
-    const [endRuling, setEndRuling] = useState('ND');
+    const [birthYear, setBirthYear] = useState('');
+    const [deathYear, setDeathYear] = useState('');
+    const [dinasty, setDinasty] = useState('-');
+    const [startRuling, setStartRuling] = useState('');
+    const [endRuling, setEndRuling] = useState('');
+    const [country, setCountry] = useState('-');
 
     React.useEffect(() => {
       const fetchData = async () => {
-        const response = await fetch(`http://127.0.0.1:5000/getRoyal?id=${id}`);
+        const response = await fetch(`http://127.0.0.1:5000/getRoyal/${id}`);
         const data = await response.json();
 
         setName(data.name);
         setTitle(data.title);
-        setBirthYear(data.birth);
-        setDeathYear(data.death);
+        setBirthYear(data.year_birth);
+        setDeathYear(data.year_death);
 
       };
       fetchData();
@@ -41,30 +42,30 @@ export default function RoyalPage() {
           <img className='w-64 h-64 rounded-full object-cover my-5 mr-10' src={royal} alt="royal" />
           <div className='flex flex-col justify-around'>
             <div>
-              <h1 id="royal-name" className="text-start text-janus font-bold"> Victoria Hanover </h1>
-              <h2 id="royal-title" className="text-start text-2xl mb-3"> Queen of England </h2>
+              <h1 id="royal-name" className="text-start text-janus font-bold"> {name} </h1>
+              <h2 id="royal-title" className="text-start text-2xl mb-3"> {title} </h2>
               <div className='flex justify-start mb-3'>
-                  <h1 className="text-start  text-3xl font-bold"> 1819 </h1>
+                  <h1 className="text-start  text-3xl font-bold"> {birthYear} </h1>
                   <h1 className="text-start  text-3xl font-bold px-2">  - </h1>
-                  <h1 className="text-start  text-3xl font-bold"> 1901 </h1>
+                  <h1 className="text-start  text-3xl font-bold"> {deathYear} </h1>
               </div>
             </div>
             <div>
-              <div className='flex justify-around items-center'>
+              <div className='flex items-center'>
                 <div id="royal-dinasty" className='flex mr-20'>
                   <h2 className="text-start  text-xl font-bold"> Dinasty: </h2>
-                  <span className=" text-start  text-xl px-3 self-center"> Hanover </span>
+                  <span className=" text-start  text-xl px-3 self-center"> {dinasty} </span>
                 </div>
                 <div id="royal-ruling period" className='flex'>
                   <h2 className="text-start  text-xl font-bold px-3"> Ruling Period: </h2>
-                  <span className=" text-start  text-xl self-center"> 1837 </span>
+                  <span className=" text-start  text-xl self-center"> {startRuling} </span>
                   <span className=" text-start  text-xl px-3"> - </span>
-                  <span className=" text-start  text-xl self-center"> 1901 </span>
+                  <span className=" text-start  text-xl self-center"> {endRuling} </span>
                 </div>
               </div>
               <div id="royal-country" className='flex mt-3'>
                   <h2 className="text-start  text-xl font-bold"> Country: </h2>
-                  <span className=" text-start  text-xl px-3 self-center"> England </span>
+                  <span className=" text-start  text-xl px-3 self-center"> {country} </span>
               </div>
             </div>
           </div>
