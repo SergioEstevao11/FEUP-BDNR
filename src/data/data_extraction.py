@@ -39,19 +39,40 @@ def parse_related_to():
 
 def parse_royals():
     royals = pd.read_csv(RAW_FOLDER + "master_data/Shortest Path Death Covariates.csv")
-    royals_date = pd.read_csv(RAW_FOLDER + "dates.csv")
+    royals_expanded = pd.read_csv(RAW_FOLDER + "Royals_expanded.csv")
     #export a csv with the following attributes: id, name, year_birth, year_death, dinasty
     royals_processed = pd.DataFrame(columns=["id", "name", "year_birth", "year_death", "dinasty"])
     for index, row in royals.iterrows():
         id = row["Person ID"]
         name = row["Name"]
-        year_birth = int(royals_date.loc[royals_date["Person ID"] == id, "Birth Year"].values[0])
+        year_birth = int(royals_expanded.loc[royals_expanded["Person ID"] == id, "Birth Year"].values[0])
         year_death = row["Year of Death"]
         dinasty = row["Country-Dynasty Association"]
         new_row = {"id": id, "name": name, "year_birth": year_birth, "year_death": year_death, "dinasty": dinasty}
         royals_processed = pd.concat([royals_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
     
-    royals_processed.to_csv(FINAL_FOLDER + "royals_processed.csv", index=False)
+
+
+    for index, row in royals_expanded.iterrows():
+        if row["Person ID"] in royals_processed["id"].values:
+            continue
+
+        id = row["Person ID"]
+        name = row["Name"].replace("/", " ").replace("  ", " ").strip()
+        if "__" in name.split(" ")[-1]:
+            #join name except for the last part
+            dinasty = name.split(" ")[-2]
+            name = "".join(name.split(" ")[:-1])
+        else:
+            dinasty = name.split(" ")[-1]
+        year_birth = row["Birth Year"]
+        year_death = row["Death Year"]
+
+        new_row = {"id": id, "name": name, "year_birth": year_birth, "year_death": year_death, "dinasty": dinasty}
+        royals_processed = pd.concat([royals_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
+    
+    royals_processed.to_csv(FINAL_FOLDER + "royals_processed_full.csv", index=False)
+
 
 def parse_ruled():
     rulers = pd.read_csv(RAW_FOLDER + "master_data/Ruler+Adjacency.csv")
