@@ -11,10 +11,24 @@ g = traversal().with_remote(DriverRemoteConnection(
 
 @app.route("/getRoyals")
 def getRoyals():
-    royals = g.V().has_label("Royals").valueMap('id','name').to_list()
+    royals = g.V().has_label("Royal").valueMap('id','name').to_list()
     return {'result': royals}
 
 @app.route("/getCountries")
 def getCountries():
-    countries = g.V().has_label("Countries").valueMap('id','name').to_list()
+    countries = g.V().has_label("Country").valueMap('id','name').to_list()
     return {'result': countries}
+
+@app.route("/getCountry/<id>")
+def getCountry(id):
+    country = g.V().hasLabel("Country").has('id', id).valueMap().next()
+    return country
+
+@app.route("/getRoyal/<id>")
+def getRoyal(id):
+    royal = g.V().hasLabel("Royal").has('id', id).valueMap().next()
+    return royal
+
+@app.route("/getFatalities/<id>")
+def getFatalities(id):
+    return {'total_fatalities': 100}

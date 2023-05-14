@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import royal from '../assets/royal.jpg';
 
@@ -9,10 +9,32 @@ export default function RoyalPage() {
     const { id } = useParams<{ id: string }>();
     const [active, setActive] = useState('table');
 
+    const [name, setName] = useState('');
+    const [title, setTitle] = useState('');
+    const [birthYear, setBirthYear] = useState('ND');
+    const [deathYear, setDeathYear] = useState('ND');
+    const [dinasty, setDinasty] = useState('ND');
+    const [startRuling, setStartRuling] = useState('ND');
+    const [endRuling, setEndRuling] = useState('ND');
+
+    React.useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch(`http://127.0.0.1:5000/getRoyal?id=${id}`);
+        const data = await response.json();
+
+        setName(data.name);
+        setTitle(data.title);
+        setBirthYear(data.birth);
+        setDeathYear(data.death);
+
+      };
+      fetchData();
+    }, []);
+
     return (
       <main className=' w-full bg-white justify-center m-0'>
         <div className="flex w-96 items-center justify-start ">
-          <a href="/" className="font-bold text-2xl sm:text-2xl mt-10">A Network Of Thrones</a>
+          <a href="/" className="font-bold text-2xl sm:text-2xl mt-10"> A Network Of Thrones</a>
           <a href="/" className="font-bold  sm:text-xl mt-10 text-janus px-3">Royals</a>
         </div>
         <div id="royal-info" className='flex w-full m-12'>

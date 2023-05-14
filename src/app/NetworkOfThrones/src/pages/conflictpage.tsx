@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import royal from '../assets/war.jpg';
 
@@ -8,6 +8,30 @@ import NodeView from '../components/nodeview'
 export default function ConflictPage() {
     const { id } = useParams<{ id: string }>();
     const [active, setActive] = useState('table');
+    const [name, setName] = useState('ND');
+    const [religion, setReligion] = useState('ND');
+    const [fatalities, setFatalities] = useState('ND');
+    const [capital, setCapital] = useState('ND');
+
+
+    React.useEffect(() => {
+      const fetchCountry = async () => {
+        const response = await fetch(`http://127.0.0.1:5000/getCountry/${id}`);
+        const data = await response.json();
+        setName(data.name);
+        setCapital(data.capital);
+        setReligion(data.religion);
+      };
+
+      const fetchFatalities = async () => {
+        const response = await fetch(`http://127.0.0.1:5000/getFatalities/${id}`);
+        const data = await response.json();
+        setFatalities(data.total_fatalities);
+      };
+
+      fetchCountry();
+      fetchFatalities();
+    }, []);
 
     return (
       <main className=' w-full bg-white justify-center m-0'>
@@ -18,21 +42,21 @@ export default function ConflictPage() {
         <div id="royal-info" className='flex w-full m-12'>
           <img className='w-64 h-64 rounded-full object-cover my-5 mr-10' src={royal} alt="royal" />
           <div className='flex flex-col'>
-            <h1 id="royal-name" className="text-start text-janus font-bold my-12 "> England </h1>
-            <div>
-              <div className='flex justify-around items-center'>
+            <h1 id="royal-name" className="text-start text-janus font-bold my-12 "> {name} </h1>
+            <div >
+              <div className='flex items-center'>
                 <div id="royal-dinasty" className='flex mr-20'>
                   <h2 className="text-start  text-xl font-bold"> Capital: </h2>
-                  <span className=" text-start  text-xl px-3 self-center"> London </span>
+                  <span className=" text-start  text-xl px-3 self-center"> {capital} </span>
                 </div>
-                <div id="royal-ruling period" className='flex'>
+                <div id="royal-ruling period" className='flex mr-20'>
                   <h2 className="text-start  text-xl font-bold px-3"> Total Fatalities: </h2>
-                  <span className=" text-start  text-xl self-center"> 16564 </span>
+                  <span className=" text-start  text-xl self-center"> {fatalities} </span>
                 </div>
               </div>
               <div id="royal-country" className='flex mt-3'>
                   <h2 className="text-start  text-xl font-bold"> Religion: </h2>
-                  <span className=" text-start  text-xl px-3 self-center"> Protestant </span>
+                  <span className=" text-start  text-xl px-3 self-center"> {religion} </span>
               </div>
             </div>
           </div>
