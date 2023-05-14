@@ -7,7 +7,7 @@ import NodeView from '../components/nodeview'
 
 export default function ConflictPage() {
     const { id } = useParams<{ id: string }>();
-    const [active, setActive] = useState('graph');
+    const [active, setActive] = useState('table');
 
     return (
       <main className=' w-full bg-white justify-center m-0'>
