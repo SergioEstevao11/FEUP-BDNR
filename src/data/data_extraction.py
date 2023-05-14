@@ -39,7 +39,7 @@ def parse_related_to():
 
 def parse_royals():
     royals = pd.read_csv(RAW_FOLDER + "master_data/Shortest Path Death Covariates.csv")
-    royals_expanded = pd.read_csv(RAW_FOLDER + "Royals_expanded.csv")
+    royals_expanded = pd.read_csv(RAW_FOLDER + "updated_royal_dates.csv")
     #export a csv with the following attributes: id, name, year_birth, year_death, dinasty
     royals_processed = pd.DataFrame(columns=["id", "name", "year_birth", "year_death", "dinasty"])
     for index, row in royals.iterrows():
