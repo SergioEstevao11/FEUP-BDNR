@@ -65,7 +65,7 @@ def getFilteredRoyals(id,filters):
     print(result)
     return result
 
-@app.route("/getFilteredCountries/<id>/<filters>")
+@app.route("/getFilteredCountries/<id>/<filters>/")
 def getFilteredCountries(id,filters):
     result = []
 
@@ -73,9 +73,16 @@ def getFilteredCountries(id,filters):
     filters = json.loads(filters)
 
     if(filters['country'] != []):
-        conflict = g.V(id).hasLabel("Countries").outE("participated_in").valueMap().toList()
-        print(conflict)
-        print('wejne')
+        conflict_ids = g.V(id).hasLabel("Countries").out("participated_in").values("id").toList()
+        for conflict in filters['country']:
+            conflicts = g.V(conflict['id']).hasLabel("Countries").out("participated_in").project("index", "id", "year", "type").by(T.id).by("id").by("year").by("type").toList()
+            for conflit1 in conflicts:
+               if(conflit1['id'] in conflict_ids):
+                   conflit1['country'] = conflict['name']
+                   conflit1['name'] = g.V(conflit1['index']).hasLabel("Conflicts").out("part_of").hasLabel("Wars").values("name").toList()
+
+                   if(conflit1 not in result):
+                        result.append(conflit1)
 
     if(filters['type'] != []):
         print('hbe')
@@ -83,7 +90,7 @@ def getFilteredCountries(id,filters):
     if(filters['year'] != []):
         print('wnjne')
 
-    return []
+    return result
 
 
 @app.route("/getMonarchInfo/<id>")
