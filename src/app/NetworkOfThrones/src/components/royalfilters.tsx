@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import MultiSelect from 'multiselect-react-dropdown';
 import RangeSlider from './range';
 import Slider from '@mui/material/Slider';
@@ -25,7 +25,12 @@ const SimpleSlider = styled(Slider)({
   },
 });
 
-const RoyalFilters = (): JSX.Element => {
+interface RoyalProps {
+  id: string | undefined;
+}
+
+
+const RoyalFilters = ({id} : RoyalProps): JSX.Element => {
 
   const [expandedAncestors, setExpandedAncestors] = useState<boolean>(false);
   const [activeAncestors, setActiveAncestors] = useState('generation');
@@ -38,8 +43,18 @@ const RoyalFilters = (): JSX.Element => {
   const [yearDescendantsValue, setYearDescendantsValue] = useState([1500,1870]); // mudar para o min ano ou o ano a meio da range
 
   const [expandedContemporaries, setExpandedContemporaries] = useState<boolean>(false);
-  const options = [{name: 'Option 1', value: 'option1'}, {name: 'Option 2', value: 'option2'}, {name: 'Option 3', value: 'option3'}];
+  const [options, setOptions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`http://127.0.0.1:5000/getContemporaries/${id}`);
+      const data = await response.json();
+
+      setOptions(data);
+    };
+    fetchData();
+  }, []);
 
   const onSelect = (selectedList : []) => {
     setSelectedOptions(selectedList);

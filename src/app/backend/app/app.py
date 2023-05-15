@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
+from gremlin_python.process.traversal import P
 
 app = Flask(__name__)
 CORS(app)
@@ -32,3 +33,11 @@ def getRoyal(id):
 @app.route("/getFatalities/<id>")
 def getFatalities(id):
     return {'total_fatalities': 100}
+
+
+@app.route("/getContemporaries/<id>")
+def getContemporaries(id):
+    royal = g.V().hasLabel("Royal").has('id', id).valueMap().next()
+    contemporaries = g.V().in_('Royal').has('year_birth', P.lte(royal['year_death'][0])).has('year_death', P.gte(royal['year_birth'][0])).dedup().values('name').toList()
+    print(contemporaries)
+    return contemporaries
