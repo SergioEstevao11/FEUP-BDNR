@@ -95,7 +95,12 @@ def getFilteredCountries(id,filters):
 
 
     if(filters['year'] != []):
-        print('wnjne')
+        conflicts = g.V(id).hasLabel('Countries').out('participated_in').hasLabel('Conflicts').has('year', P.between(filters['year'][0],filters['year'][1])).project("index", "id", "year", "type").by(T.id).by("id").by("year").by("type").toList()
+        for conflit in conflicts:
+            conflit['country'] = g.V(id).hasLabel("Countries").values('name').toList()
+            conflit['name'] = g.V(conflit['index']).hasLabel("Conflicts").out("part_of").hasLabel("Wars").values("name").toList()
+            if(conflit not in result):
+                result.append(conflit)
 
     return result
 
