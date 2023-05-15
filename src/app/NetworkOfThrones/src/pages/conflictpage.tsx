@@ -34,7 +34,9 @@ export default function ConflictPage() {
       fetchFatalities();
     }, []);
 
-    const applyFilters = () => {};
+    const applyFilters = (filters : string) => {
+      console.log(filters)
+    };
 
     return (
       <main className=' w-full bg-white justify-center m-0'>
@@ -68,10 +70,7 @@ export default function ConflictPage() {
         <div id="royal-filter-view" className='mb-10'>
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
-              <ConflictFilters id={id}/>
-              <div className='m-10'>
-                <Button variant="contained" className='w-full' style={{ backgroundColor: '#108768', color: 'white'}} onClick={applyFilters}>Filter</Button>
-              </div>
+              <ConflictFilters id={id} callback={applyFilters}/>
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">

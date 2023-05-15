@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import MultiSelect from 'multiselect-react-dropdown';
 import RangeSlider from './range';
+import Button from '@mui/material/Button';
 
 interface ConflictProps {
   id: string | undefined;
+  callback : (value: string) => void;
 }
 
-const ConflictFilters = ({id} : ConflictProps): JSX.Element => {
+const ConflictFilters = ({id, callback} : ConflictProps): JSX.Element => {
 
   const [expandedYear, setExpandedYear] = useState<boolean>(false);
   const [yearValue, setYearValue] = useState([1100,1903]); // mudar para o min ano ou o ano a meio da range
@@ -63,6 +65,16 @@ const ConflictFilters = ({id} : ConflictProps): JSX.Element => {
   const handleToggleYear = () => {
     setExpandedYear(!expandedYear);
   };
+
+  const handleFilters = () => {
+    const filters = {
+      country : expandedCountry ?  selectedCountry : [],
+      type : expandedType ? selectedType : [],
+      year: expandedYear ? yearValue : []
+    };
+
+    callback(JSON.stringify(filters))
+  }
   
 
 
@@ -105,6 +117,9 @@ const ConflictFilters = ({id} : ConflictProps): JSX.Element => {
       <div id="conflict-type-body" className={`${expandedType ? '' : 'hidden'}`} aria-labelledby="conflict-type">
       <MultiSelect options={optionsType} selectedValues={selectedType} onSelect={onSelectType} onRemove={onRemoveType} displayValue="name" showCheckbox={true} 
               className='w-full px-5 accent-janus'/>
+      </div>
+      <div className='m-10'>
+        <Button variant="contained" className='w-full' style={{ backgroundColor: '#108768', color: 'white'}} onClick={handleFilters}>Filter</Button>
       </div>
     </div>
   );
