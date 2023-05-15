@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import royal from '../assets/war.jpg';
+import Button from '@mui/material/Button';
 
 import ConflictFilters from '../components/conflictfilters'
 import NodeView from '../components/nodeview'
@@ -8,10 +9,10 @@ import NodeView from '../components/nodeview'
 export default function ConflictPage() {
     const { id } = useParams<{ id: string }>();
     const [active, setActive] = useState('table');
-    const [name, setName] = useState('ND');
-    const [religion, setReligion] = useState('ND');
-    const [fatalities, setFatalities] = useState('ND');
-    const [capital, setCapital] = useState('ND');
+    const [name, setName] = useState('');
+    const [religion, setReligion] = useState('-');
+    const [fatalities, setFatalities] = useState('-');
+    const [capital, setCapital] = useState('-');
 
 
     React.useEffect(() => {
@@ -32,6 +33,8 @@ export default function ConflictPage() {
       fetchCountry();
       fetchFatalities();
     }, []);
+
+    const applyFilters = () => {};
 
     return (
       <main className=' w-full bg-white justify-center m-0'>
@@ -66,6 +69,9 @@ export default function ConflictPage() {
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
               <ConflictFilters id={id}/>
+              <div className='m-10'>
+                <Button variant="contained" className='w-full' style={{ backgroundColor: '#108768', color: 'white'}} onClick={applyFilters}>Filter</Button>
+              </div>
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">

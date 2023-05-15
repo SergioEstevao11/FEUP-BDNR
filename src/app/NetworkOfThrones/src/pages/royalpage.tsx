@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import royal from '../assets/royal.jpg';
+import Button from '@mui/material/Button';
 
 import RoyalFilters from '../components/royalfilters'
 import NodeView from '../components/nodeview'
@@ -13,7 +14,7 @@ export default function RoyalPage() {
     const [title, setTitle] = useState('');
     const [birthYear, setBirthYear] = useState('');
     const [deathYear, setDeathYear] = useState('');
-    const [dinasty, setDinasty] = useState('-');
+    const [family, setFamily] = useState('-');
     const [startRuling, setStartRuling] = useState('');
     const [endRuling, setEndRuling] = useState('');
     const [country, setCountry] = useState('-');
@@ -31,6 +32,8 @@ export default function RoyalPage() {
       };
       fetchData();
     }, []);
+
+    const applyFilters = () => {};
 
     return (
       <main className=' w-full bg-white justify-center m-0'>
@@ -52,9 +55,9 @@ export default function RoyalPage() {
             </div>
             <div>
               <div className='flex items-center'>
-                <div id="royal-dinasty" className='flex mr-20'>
-                  <h2 className="text-start  text-xl font-bold"> Dinasty: </h2>
-                  <span className=" text-start  text-xl px-3 self-center"> {dinasty} </span>
+                <div id="royal-family" className='flex mr-20'>
+                  <h2 className="text-start  text-xl font-bold"> Family: </h2>
+                  <span className=" text-start  text-xl px-3 self-center"> {family} </span>
                 </div>
                 <div id="royal-ruling period" className='flex'>
                   <h2 className="text-start  text-xl font-bold px-3"> Ruling Period: </h2>
@@ -75,6 +78,9 @@ export default function RoyalPage() {
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
               <RoyalFilters id={id} birthYear={parseInt(birthYear)} deathYear={parseInt(deathYear)}/>
+              <div className='m-10'>
+                <Button variant="contained" className='w-full' style={{ backgroundColor: '#108768', color: 'white'}} onClick={applyFilters}>Filter</Button>
+              </div>
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">
