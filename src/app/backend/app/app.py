@@ -12,22 +12,23 @@ g = traversal().with_remote(DriverRemoteConnection(
 
 @app.route("/getRoyals")
 def getRoyals():
-    royals = g.V().has_label("Royal").valueMap('id','name').to_list()
+    royals = g.V().has_label("Royals").valueMap('id','name').limit(2000).toList()
     return {'result': royals}
 
 @app.route("/getCountries")
 def getCountries():
-    countries = g.V().has_label("Country").valueMap('id','name').to_list()
+    countries = g.V().has_label("Countries").valueMap('id','name').toList()
     return {'result': countries}
 
 @app.route("/getCountry/<id>")
 def getCountry(id):
-    country = g.V().hasLabel("Country").has('id', id).valueMap().next()
+    country = g.V().hasLabel("Countries").has('id', id).valueMap().next()
     return country
 
 @app.route("/getRoyal/<id>")
 def getRoyal(id):
-    royal = g.V().hasLabel("Royal").has('id', id).valueMap().next()
+    royal = g.V().hasLabel("Royals").has('id', id).valueMap().next()
+    print(royal)
     return royal
 
 @app.route("/getFatalities/<id>")
@@ -44,7 +45,6 @@ def getConflictType(id):
 
 @app.route("/getContemporaries/<id>")
 def getContemporaries(id):
-    royal = g.V().hasLabel("Royal").has('id', id).valueMap().next()
-    contemporaries = g.V().hasLabel('Royal').has('year_birth', P.lte(royal['year_death'][0])).has('year_death', P.gte(royal['year_birth'][0])).dedup().valueMap('name', 'id').toList()
-    print(contemporaries)
+    royal = g.V().hasLabel("Royals").has('id', id).valueMap().next()
+    contemporaries = g.V().hasLabel('Royals').has('year_birth', P.lte(royal['year_death'][0])).has('year_death', P.gte(royal['year_birth'][0])).dedup().valueMap('name', 'id').toList()
     return contemporaries

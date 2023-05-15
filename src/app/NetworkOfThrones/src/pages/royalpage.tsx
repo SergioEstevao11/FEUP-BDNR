@@ -14,6 +14,7 @@ export default function RoyalPage() {
     const [title, setTitle] = useState('');
     const [birthYear, setBirthYear] = useState('');
     const [deathYear, setDeathYear] = useState('');
+
     const [family, setFamily] = useState('-');
     const [startRuling, setStartRuling] = useState('');
     const [endRuling, setEndRuling] = useState('');
@@ -24,10 +25,10 @@ export default function RoyalPage() {
         const response = await fetch(`http://127.0.0.1:5000/getRoyal/${id}`);
         const data = await response.json();
 
-        setName(data.name);
-        setTitle(data.title);
-        setBirthYear(data.year_birth);
-        setDeathYear(data.year_death);
+        setName(data.name[0]);
+        setTitle(isNaN(data.title[0]) ? '' : data.title[0]);
+        setBirthYear(data.year_birth[0] == 'nan' ? '' : data.year_birth[0]);
+        setDeathYear(data.year_death[0]  == 'nan' ? '' : data.year_birth[0]);
 
       };
       fetchData();
