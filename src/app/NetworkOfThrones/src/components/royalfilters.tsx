@@ -98,13 +98,13 @@ const RoyalFilters = ({id, birthYear, deathYear, callback} : RoyalProps): JSX.El
 
   const handleFilters = () => {
     const filters = {
-      ancestors : {
+      ancestors : expandedAncestors ? {
         [activeAncestors] : activeAncestors == 'generation' ? genAncestorsValue : yearAncestorsValue
-      },
-      descendants : {
+      } : {},
+      descendants : expandedDescendants ? {
         [activeDescendants] : activeDescendants == 'generation' ? genDescendantsValue : yearDescendantsValue
-      },
-      contemporaries : selectedOptions,
+      } : {},
+      contemporaries : expandedContemporaries ? selectedOptions : [],
       siblings : siblings,
     };
 
