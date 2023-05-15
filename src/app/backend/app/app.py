@@ -14,7 +14,7 @@ g = traversal().with_remote(DriverRemoteConnection(
 
 @app.route("/getRoyals")
 def getRoyals():
-    royals = g.V().hasLabel("Royals").project("id", "name").by(T.id).by("name").limit(5000).toList()
+    royals = g.V().hasLabel("Royals").project("id", "name").by(T.id).by("name").limit(10000).toList()
     return {'result': royals}
 
 @app.route("/getCountries")
@@ -32,14 +32,18 @@ def getRoyal(id):
     royal = g.V(id).hasLabel("Royals").valueMap().next()
     return royal
 
-@app.route("/getFilteredRoyals/<filters>")
-def getFilteredRoyals(filters):
+@app.route("/getFilteredRoyals/<id>/<filters>")
+def getFilteredRoyals(id,filters):
+    result = []
     filters = json.loads(filters)
-
     print(filters)
+
+    royal = g.V(id).hasLabel("Royals")
     
     if(filters['ancestors'].get('generation') != None):
-        print('hb')
+        for i in range(filters['ancestors'].get('generation')):
+            result.append(royal.out('related_with').toList())
+        print(result)
     elif(filters['ancestors'].get('year') != None):
         print('bubuj')
 
@@ -56,8 +60,8 @@ def getFilteredRoyals(filters):
         
     return []
 
-@app.route("/getFilteredCountries/<filters>")
-def getFilteredCountries(filters):
+@app.route("/getFilteredCountries/<id>/<filters>")
+def getFilteredCountries(id,filters):
     result = []
     filters = json.loads(filters)
 
@@ -75,8 +79,9 @@ def getFilteredCountries(filters):
 # TODO
 @app.route("/getMonarchInfo/<id>")
 def getMonarchInfo(id):
-    # period = g.V(id).hasLabel("Royals").out("ruled").inE().elementMap().toList()
-    return []
+    country = g.V(id).hasLabel("Royals").out("ruled").hasLabel("Countries").valueMap("name").toList()
+    period = g.V(id).hasLabel("Royals").outE("ruled").valueMap().toList()
+    return {'year_end' : period[0]['year_end'], 'year_start' : period[0]['year_start'], 'country' : country[0]['name'][0]}
 
 @app.route("/getFatalities/<id>")
 def getFatalities(id):

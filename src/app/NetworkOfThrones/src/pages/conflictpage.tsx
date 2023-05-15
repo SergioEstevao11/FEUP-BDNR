@@ -35,7 +35,7 @@ export default function ConflictPage() {
     }, []);
 
     const applyFilters = async (filters : string) => {
-      const response = await fetch(`http://127.0.0.1:5000/getFilteredCountries/${filters}`);
+      const response = await fetch(`http://127.0.0.1:5000/getFilteredCountries/${id}/${filters}`);
       const data = await response.json();
 
       setResults(data);

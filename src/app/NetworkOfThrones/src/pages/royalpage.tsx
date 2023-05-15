@@ -50,7 +50,7 @@ export default function RoyalPage() {
     }, []);
 
     const applyFilters = async (filters : string) => {
-      const response = await fetch(`http://127.0.0.1:5000/getFilteredRoyals/${filters}`);
+      const response = await fetch(`http://127.0.0.1:5000/getFilteredRoyals/${id}/${filters}`);
       const data = await response.json();
 
       setResults(data);
