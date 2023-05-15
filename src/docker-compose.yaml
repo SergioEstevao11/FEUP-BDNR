@@ -8,16 +8,16 @@ services:
       -  "./configs/janusgraph:/etc/opt/janusgraph:ro"
     
     
-  # cassandra:
-  #   image: cassandra:3
-  #   container_name: jc-cassandra
-  #   environment:
-  #     - CASSANDRA_START_RPC=true
-  #     - MAX_HEAP_SIZE=1G
-  #     - HEAP_NEWSIZE=256M
-  #   ports:
-  #     -  "9042:9042"
-  #     -  "9160:9160"
+  cassandra:
+    image: cassandra:3
+    container_name: jc-cassandra
+    environment:
+      - CASSANDRA_START_RPC=true
+      - MAX_HEAP_SIZE=1G
+      - HEAP_NEWSIZE=256M
+    ports:
+      -  "9042:9042"
+      -  "9160:9160"
     
 
   # flask-app:
@@ -38,18 +38,18 @@ services:
     ports:
       - "6001:5173"
     
-  cassandra_p1:
-    image: cassandra:3
-    environment:
-      - CASSANDRA_START_RPC=true
-      - MAX_HEAP_SIZE=1G
-      - HEAP_NEWSIZE=256M
-    ports:
-      -  "9042:9042"
-      -  "9160:9160"
-    #volumes:
-    #  - ./volumes/p1:/var/lib/cassandra
-    container_name: "cassandra_p1"
+  # cassandra_p1:
+  #   image: cassandra:3
+  #   environment:
+  #     - CASSANDRA_START_RPC=true
+  #     - MAX_HEAP_SIZE=1G
+  #     - HEAP_NEWSIZE=256M
+  #   ports:
+  #     -  "9042:9042"
+  #     -  "9160:9160"
+  #   #volumes:
+  #   #  - ./volumes/p1:/var/lib/cassandra
+  #   container_name: "cassandra_p1"
 
   # cassandra_p2:
   #   image: cassandra:3

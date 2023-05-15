@@ -74,14 +74,24 @@ def upload_edges(data_frame, col_out, verts_out, col_in, verts_in, g, label,prop
 
 def main():
 
-    royals = pd.read_csv('../processed_data/royals_processed.csv')
-    countries = pd.read_csv('../processed_data/countries_processed.csv')
-    related_with = pd.read_csv('../processed_data/related_with_processed.csv')
-    conflicts = pd.read_csv('../processed_data/conflicts_processed.csv')
-    wars = pd.read_csv('../processed_data/wars_processed.csv')
-    ruled = pd.read_csv('../processed_data/ruled_processed.csv')
-    participated_in = pd.read_csv('../processed_data/participated_in_processed.csv')
-    part_of = pd.read_csv('../processed_data/part_of_processed.csv')
+    royals = pd.read_csv('../processed_data/royals_processed.csv', na_values=[float('nan')], keep_default_na=False)
+    countries = pd.read_csv('../processed_data/countries_processed.csv', na_values=[float('nan')], keep_default_na=False)
+    related_with = pd.read_csv('../processed_data/related_with_processed.csv', na_values=[float('nan')], keep_default_na=False)
+    conflicts = pd.read_csv('../processed_data/conflicts_processed.csv', na_values=[float('nan')], keep_default_na=False)
+    wars = pd.read_csv('../processed_data/wars_processed.csv', na_values=[float('nan')], keep_default_na=False)
+    ruled = pd.read_csv('../processed_data/ruled_processed.csv', na_values=[float('nan')], keep_default_na=False)
+    participated_in = pd.read_csv('../processed_data/participated_in_processed.csv', na_values=[float('nan')], keep_default_na=False)
+    part_of = pd.read_csv('../processed_data/part_of_processed.csv', na_values=[float('nan')], keep_default_na=False)
+
+
+    # royals.fillna('')
+    # countries.fillna('')
+    # related_with.fillna('')
+    # conflicts.fillna('')
+    # wars.fillna('')
+    # ruled.fillna('')
+    # participated_in.fillna('')
+    # part_of.fillna('')
 
     try:
         g = traversal().with_remote(DriverRemoteConnection(

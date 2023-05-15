@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import royal from '../assets/royal.jpg';
-import Button from '@mui/material/Button';
 
 import RoyalFilters from '../components/royalfilters'
 import NodeView from '../components/nodeview'
@@ -12,8 +11,8 @@ export default function RoyalPage() {
 
     const [name, setName] = useState('');
     const [title, setTitle] = useState('');
-    const [birthYear, setBirthYear] = useState('');
-    const [deathYear, setDeathYear] = useState('');
+    const [birthYear, setBirthYear] = useState(0);
+    const [deathYear, setDeathYear] = useState(0);
 
     const [family, setFamily] = useState('-');
     const [startRuling, setStartRuling] = useState('');
@@ -21,20 +20,36 @@ export default function RoyalPage() {
     const [country, setCountry] = useState('-');
 
     React.useEffect(() => {
-      const fetchData = async () => {
+      const fetchRoyalInfo = async () => {
         const response = await fetch(`http://127.0.0.1:5000/getRoyal/${id}`);
         const data = await response.json();
 
-        setName(data.name[0]);
-        setTitle(isNaN(data.title[0]) ? '' : data.title[0]);
-        setBirthYear(data.year_birth[0] == 'nan' ? '' : data.year_birth[0]);
-        setDeathYear(data.year_death[0]  == 'nan' ? '' : data.year_birth[0]);
+        setName(data.name);
+        setTitle(data.title);
+        setBirthYear(parseInt(data.year_birth));
+        setDeathYear(parseInt(data.year_death));
+        setFamily(data.family);
 
       };
-      fetchData();
+
+      const fetchMonarchInfo = async () => {
+        const response = await fetch(`http://127.0.0.1:5000/getMonarchInfo/${id}`);
+        const data = await response.json();
+
+        data.country? setCountry(data.country) : setCountry('-');
+        data.year_start? setStartRuling(data.year_start) : setStartRuling('');
+        data.year_end? setEndRuling(data.year_end) : setEndRuling('')
+
+      };
+
+      fetchRoyalInfo();
+      fetchMonarchInfo();
+
     }, []);
 
-    const applyFilters = () => {};
+    const applyFilters = (filters : string) => {
+      console.log(filters)
+    };
 
     return (
       <main className=' w-full bg-white justify-center m-0'>
@@ -78,10 +93,7 @@ export default function RoyalPage() {
         <div id="royal-filter-view" className='mb-10'>
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
-              <RoyalFilters id={id} birthYear={parseInt(birthYear)} deathYear={parseInt(deathYear)}/>
-              <div className='m-10'>
-                <Button variant="contained" className='w-full' style={{ backgroundColor: '#108768', color: 'white'}} onClick={applyFilters}>Filter</Button>
-              </div>
+              <RoyalFilters id={id} birthYear={birthYear} deathYear={deathYear} callback={applyFilters} />
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">

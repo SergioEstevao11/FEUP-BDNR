@@ -3,6 +3,7 @@ from flask_cors import CORS
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 from gremlin_python.process.traversal import P
+from gremlin_python.process.graph_traversal import __
 
 app = Flask(__name__)
 CORS(app)
@@ -31,14 +32,22 @@ def getRoyal(id):
     print(royal)
     return royal
 
+# TODO
+@app.route("/getMonarchInfo/<id>")
+def getMonarchInfo(id):
+    return []
+
+# TODO
 @app.route("/getFatalities/<id>")
 def getFatalities(id):
     return {'total_fatalities': 100}
 
+# TODO
 @app.route("/getConflictCountries/<id>")
 def getConflictCountries(id):
     return []
 
+# TODO
 @app.route("/getConflictType/<id>")
 def getConflictType(id):
     return []
@@ -46,5 +55,5 @@ def getConflictType(id):
 @app.route("/getContemporaries/<id>")
 def getContemporaries(id):
     royal = g.V().hasLabel("Royals").has('id', id).valueMap().next()
-    contemporaries = g.V().hasLabel('Royals').has('year_birth', P.lte(royal['year_death'][0])).has('year_death', P.gte(royal['year_birth'][0])).dedup().valueMap('name', 'id').toList()
+    contemporaries = g.V().hasLabel('Royals').has('year_birth', P.lte(royal['year_death'][0])).has('year_death', P.gte(royal['year_birth'][0])).dedup().valueMap('name', 'id').limit(100).toList()
     return contemporaries
