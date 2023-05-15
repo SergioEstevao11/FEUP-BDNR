@@ -47,9 +47,11 @@ def getConflictCountries(id):
     return []
 
 # TODO
-@app.route("/getConflictType/<id>")
-def getConflictType(id):
-    return []
+@app.route("/getConflictTypes")
+def getConflictType():
+    types = g.V().hasLabel("Conflicts").valueMap('type').dedup().toList()
+    result = [{'name' : type_['type'][0] } for type_ in types]
+    return result
 
 @app.route("/getContemporaries/<id>")
 def getContemporaries(id):

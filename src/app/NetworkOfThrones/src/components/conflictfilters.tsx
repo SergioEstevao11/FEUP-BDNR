@@ -31,7 +31,7 @@ const ConflictFilters = ({id, callback} : ConflictProps): JSX.Element => {
     };
 
     const fetchConflictType = async () => {
-      const response = await fetch(`http://127.0.0.1:5000/getConflictType/${id}`);
+      const response = await fetch(`http://127.0.0.1:5000/getConflictTypes`);
       const data = await response.json();
 
       setOptionsType(data);
