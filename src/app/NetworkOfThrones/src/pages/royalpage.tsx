@@ -19,7 +19,7 @@ export default function RoyalPage() {
     const [endRuling, setEndRuling] = useState('');
     const [country, setCountry] = useState('-');
 
-    const [results, setResults] = useState<any[]>([]);
+    const [royalResults, setRoyalResults] = useState<any[]>([]);
 
     React.useEffect(() => {
       const fetchRoyalInfo = async () => {
@@ -54,7 +54,7 @@ export default function RoyalPage() {
       const data = await response.json();
 
       console.log(data);
-      setResults(data);
+      setRoyalResults(data);
     };
 
     return (
@@ -99,7 +99,7 @@ export default function RoyalPage() {
         <div id="royal-filter-view" className='mb-10'>
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
-              <RoyalFilters id={id} birthYear={birthYear} deathYear={deathYear} callback={applyFilters} reset={() => setResults([])}/>
+              <RoyalFilters id={id} birthYear={birthYear} deathYear={deathYear} callback={applyFilters} reset={() => setRoyalResults([])}/>
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">
@@ -135,7 +135,7 @@ export default function RoyalPage() {
                       </tr>
                   </thead>
                   <tbody>
-                  {results.map((royal) => (
+                  {royalResults.map((royal) => (
                     <tr
                       key={royal.name}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"

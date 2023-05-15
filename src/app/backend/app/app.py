@@ -5,6 +5,7 @@ from gremlin_python.driver.driver_remote_connection import DriverRemoteConnectio
 from gremlin_python.process.traversal import P, T
 from gremlin_python.process.graph_traversal import __
 import json
+from urllib.parse import unquote
 
 app = Flask(__name__)
 CORS(app)
@@ -36,13 +37,11 @@ def getRoyal(id):
 def getFilteredRoyals(id,filters):
     result = []
     filters = json.loads(filters)
-    print(filters)
-
-    royal = g.V(id).hasLabel("Royals")
+    print(id)
     
     if(filters['ancestors'].get('generation') != None):
-        # ancestors = g.V(id).hasLabel("Royals").repeat(__.in_('related_with').dedup()).times(2).emit().hasLabel('Royals').valueMap().toList()
-        print('ancestors gen')
+        ancestors = g.V().has('name', "Victoria Hanover").hasLabel("Royals").inE().valueMap().toList()
+        print(ancestors)
     elif(filters['ancestors'].get('year') != None):
         print('ancestors year')
 
@@ -69,9 +68,13 @@ def getFilteredRoyals(id,filters):
 @app.route("/getFilteredCountries/<id>/<filters>")
 def getFilteredCountries(id,filters):
     result = []
+
+    filters = unquote(filters)
     filters = json.loads(filters)
 
     if(filters['country'] != []):
+        conflict = g.V(id).hasLabel("Countries").outE("participated_in").valueMap().toList()
+        print(conflict)
         print('wejne')
 
     if(filters['type'] != []):
