@@ -36,7 +36,8 @@ interface RoyalProps {
 
 const RoyalFilters = ({id, birthYear, deathYear, callback} : RoyalProps): JSX.Element => {
 
-  const [blockYear, setBlockYear] = useState<boolean>(false);
+  const [blockAncestorYear, setBlockAncestorYear] = useState<boolean>(false);
+  const [blockDescendantYear, setBlockDescendantYear] = useState<boolean>(false);
 
   const [expandedAncestors, setExpandedAncestors] = useState<boolean>(false);
   const [activeAncestors, setActiveAncestors] = useState('generation');
@@ -67,11 +68,11 @@ const RoyalFilters = ({id, birthYear, deathYear, callback} : RoyalProps): JSX.El
   React.useEffect(() => {
     if(!isNaN(birthYear))
       setYearAncestorsValue([birthYear - 100, birthYear])
-    else setBlockYear(true);
+    else setBlockAncestorYear(true);
 
     if(!isNaN(deathYear))
       setYearDescendantsValue([deathYear, deathYear + 100])
-    else setBlockYear(true);
+    else setBlockDescendantYear(true);
 
   }, [birthYear, deathYear])
 
@@ -124,11 +125,11 @@ const RoyalFilters = ({id, birthYear, deathYear, callback} : RoyalProps): JSX.El
       </h2>
       <div id="royal-ancestors-body" className={`${expandedAncestors ? '' : 'hidden'}`} aria-labelledby="royal-ancestors">
         <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeAncestors == 'generation' ? '' : 'opacity-50'}`}  onClick={() => setActiveAncestors('generation')} >By Generation</button>
-        {blockYear? <></> : <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeAncestors == 'year' ? '' : 'opacity-50'}`}  onClick={() => setActiveAncestors('year')} >By Year</button> }
+        {blockAncestorYear? <></> : <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeAncestors == 'year' ? '' : 'opacity-50'}`}  onClick={() => setActiveAncestors('year')} >By Year</button> }
         <div className={`${activeAncestors == 'generation' ? '' : 'hidden'} my-2 mx-10`}>
           <SimpleSlider defaultValue={1} step={1} marks={[{label:1, value:1},{label:2, value:2},{label:3,value:3}]} min={1} max={3} value={genAncestorsValue} onChange={ (e, val) => setGenAncestorsValue(Array.isArray(val) ? val[0] : val) }  />
         </div>
-        {blockYear? <></> : 
+        {blockAncestorYear? <></> : 
           <div className={`${activeAncestors == 'year' ? '' : 'hidden'} my-2 mx-10`}>
             <RangeSlider year={[1000,isNaN(birthYear) ? 1400 : birthYear]} minDistance={5} value={yearAncestorsValue} setValue={setYearAncestorsValue}></RangeSlider>
           </div>
@@ -145,17 +146,17 @@ const RoyalFilters = ({id, birthYear, deathYear, callback} : RoyalProps): JSX.El
       </h2>
       <div id="royal-descendants-body" className={`${expandedDescendants ? '' : 'hidden'}`} aria-labelledby="royal-descendants">
         <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeDescendants == 'generation' ? '' : 'opacity-50'}`}  onClick={() => setActiveDescendants('generation')} >By Generation</button>
-        {blockYear? <></> : <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeDescendants == 'year' ? '' : 'opacity-50'}`}  onClick={() => setActiveDescendants('year')} >By Year</button>}
+        {blockDescendantYear? <></> : <button type="button" className={`text-white bg-janus hover:bg-janus focus:outline-none font-medium rounded-full text-sm px-5 py-1 text-center mr-2 mb-2 ${activeDescendants == 'year' ? '' : 'opacity-50'}`}  onClick={() => setActiveDescendants('year')} >By Year</button>}
         <div className={`${activeDescendants == 'generation' ? '' : 'hidden'} my-2 mx-10`}>
           <SimpleSlider defaultValue={1} step={1} value={genDescendantsValue} marks={[{label:1, value:1},{label:2, value:2},{label:3,value:3}]} min={1} max={3} onChange={ (e, val) => setGenDescendantsValue(Array.isArray(val) ? val[0] : val) }  />
         </div>
-        {blockYear? <></> : 
+        {blockDescendantYear? <></> : 
           <div className={`${activeDescendants == 'year' ? '' : 'hidden'} my-2 mx-10`}>
             <RangeSlider year={[isNaN(deathYear) ? 1500 : deathYear, 2003]} minDistance={5} value={yearDescendantsValue} setValue={setYearDescendantsValue}></RangeSlider>
           </div>
         }
       </div>
-      {blockYear? <></> : 
+      {(blockAncestorYear || blockDescendantYear)? <></> : 
         <h2 id="royal-contemporaries">
           <button type="button" className="flex items-center justify-between w-full font-medium text-left text-gray-500  dark:border-gray-700 dark:text-gray-400" data-accordion-target="#royal-ancestors-body"
             aria-expanded={expandedDescendants} aria-controls="royal-contemporaries-body" onClick={handleToggleContemporaries}>

@@ -23,14 +23,14 @@ export default function Search({label} : SearchProps) {
 
   const handleChange = (event : any, value : any) => {
     if(value)
-      return label == 'Royal' ? navigate(`/royal/${value.id[0]}`) : navigate(`/conflict/${value.id[0]}`)
+      return label == 'Royal' ? navigate(`/royal/${value.id}`) : navigate(`/conflict/${value.id}`)
   } 
 
 
   return (
     <React.Fragment>
       <Autocomplete value={value} options={options} getOptionLabel={(option: OptionType) => option.name[0]} 
-        renderOption={(props, option) => <li {...props} key={option.id[0]}>{option.name[0]}</li>}
+        renderOption={(props, option) => <li {...props} key={option.id}>{option.name}</li>}
         onChange={handleChange}
         selectOnFocus clearOnBlur handleHomeEndKeys sx={{ width: 300 }}
         renderInput={(params) => <TextField {...params} label={label}  />}
@@ -40,6 +40,7 @@ export default function Search({label} : SearchProps) {
 }
 
 interface OptionType {
-  name: [string];
-  id: [number];
+  name: string;
+  id: number;
+  index : number;
 }
