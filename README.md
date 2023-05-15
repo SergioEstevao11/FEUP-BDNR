@@ -1,4 +1,4 @@
-# FEUP-BDNR
+# Network Of Thrones
 ---
 Implementation of a social network in JanusGraph, using Gremlin.
 

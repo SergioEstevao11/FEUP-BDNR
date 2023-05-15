@@ -2,6 +2,7 @@ from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 import pandas as pd
 from progress.bar import Bar
+import sys
 
 
 def upload_vertices(data_frame, graph, label):
@@ -62,19 +63,24 @@ def upload_edges(data_frame, col_out, verts_out, col_in, verts_in, g, label,prop
 
 def main():
 
-    royals = pd.read_csv('../../data/processed_data/royals_processed.csv')
-    countries = pd.read_csv('../../data/processed_data/countries_processed.csv')
-    related_with = pd.read_csv('../../data/processed_data/related_with_processed.csv')
-    conflicts = pd.read_csv('../../data/processed_data/conflicts_processed.csv')
-    wars = pd.read_csv('../../data/processed_data/wars_processed.csv')
+    royals = pd.read_csv('../processed_data/royals_processed.csv')
+    countries = pd.read_csv('../processed_data/countries_processed.csv')
+    related_with = pd.read_csv('../processed_data/related_with_processed.csv')
+    conflicts = pd.read_csv('../processed_data/conflicts_processed.csv')
+    wars = pd.read_csv('../processed_data/wars_processed.csv')
 
-    ruled = pd.read_csv('../../data/processed_data/ruled_processed.csv')
-    participated_in = pd.read_csv('../../data/processed_data/participated_in_processed.csv')
-    part_of = pd.read_csv('../../data/processed_data/part_of_processed.csv')
+    ruled = pd.read_csv('../processed_data/ruled_processed.csv')
+    participated_in = pd.read_csv('../processed_data/participated_in_processed.csv')
+    part_of = pd.read_csv('../processed_data/part_of_processed.csv')
 
+    try:
+        g = traversal().with_remote(DriverRemoteConnection(
+            'ws://127.0.0.1:8182/gremlin', 'g'))
+        g.V().hasNext()
+    except Exception:
+         print("[ERROR] JanusGraph unavailable - cancelling data load")
+         sys.exit(1)
 
-    g = traversal().with_remote(DriverRemoteConnection(
-        'ws://127.0.0.1:8182/gremlin', 'g'))
 
     g.V().drop().iterate()
 

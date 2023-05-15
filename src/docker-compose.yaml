@@ -17,14 +17,19 @@ services:
       -  "9160:9160"
     
 
-  # fastapi-app:
+  # flask-app:
   #   build: ./app/backend
-  #   image: fast-api-uvicorn-backend
-  #   container_name: "bdnr-backend"
+  #   volumes:
+  #     - ./app:/app
   #   user: root
   #   ports:
-  #     - "5001:80"
-  # react-app:
-  #   build: ./app/NetworkOfThrones
-  #   ports:
-  #     - "6001:3000"
+  #     - "5001:5000"
+  #   command: python app/load_data.py
+  #   container_name: "bdnr-backend"
+
+  react-app:
+    build: ./app/NetworkOfThrones
+    container_name: "bdnr-frontend"
+    ports:
+      - "6001:5173"
+    
