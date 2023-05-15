@@ -83,16 +83,6 @@ def main():
     participated_in = pd.read_csv('../processed_data/participated_in_processed.csv', na_values=[float('nan')], keep_default_na=False)
     part_of = pd.read_csv('../processed_data/part_of_processed.csv', na_values=[float('nan')], keep_default_na=False)
 
-
-    # royals.fillna('')
-    # countries.fillna('')
-    # related_with.fillna('')
-    # conflicts.fillna('')
-    # wars.fillna('')
-    # ruled.fillna('')
-    # participated_in.fillna('')
-    # part_of.fillna('')
-
     try:
         g = traversal().with_remote(DriverRemoteConnection(
             'ws://127.0.0.1:8182/gremlin', 'g'))

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import royal from '../assets/war.jpg';
-import Button from '@mui/material/Button';
 
 import ConflictFilters from '../components/conflictfilters'
 import NodeView from '../components/nodeview'
@@ -27,7 +26,7 @@ export default function ConflictPage() {
       const fetchFatalities = async () => {
         const response = await fetch(`http://127.0.0.1:5000/getFatalities/${id}`);
         const data = await response.json();
-        setFatalities(data.total_fatalities);
+        data.fatalities > 0 ? setFatalities(data.fatalities) : setFatalities('-');
       };
 
       fetchCountry();

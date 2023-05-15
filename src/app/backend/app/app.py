@@ -36,12 +36,12 @@ def getRoyal(id):
 def getMonarchInfo(id):
     return []
 
-# TODO
 @app.route("/getFatalities/<id>")
 def getFatalities(id):
-    return {'total_fatalities': 100}
+    fatalities = g.V(id).hasLabel("Countries").out("participated_in").hasLabel("Conflicts").out("part_of").hasLabel("Wars").values("deaths").toList()
+    return {'fatalities': sum(float(f) for f in fatalities if f )}
 
-# TODO
+
 @app.route("/getConflictTypes")
 def getConflictType():
     types = g.V().hasLabel("Conflicts").valueMap('type').dedup().toList()
