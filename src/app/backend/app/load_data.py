@@ -68,7 +68,6 @@ def main():
     related_with = pd.read_csv('../processed_data/related_with_processed.csv')
     conflicts = pd.read_csv('../processed_data/conflicts_processed.csv')
     wars = pd.read_csv('../processed_data/wars_processed.csv')
-
     ruled = pd.read_csv('../processed_data/ruled_processed.csv')
     participated_in = pd.read_csv('../processed_data/participated_in_processed.csv')
     part_of = pd.read_csv('../processed_data/part_of_processed.csv')
@@ -87,24 +86,14 @@ def main():
     print(g.V().toList())
     
     royals = upload_vertices(royals,g,"Royals")
-
     countries = upload_vertices(countries,g,"Countries")
-
     wars = upload_vertices(wars,g,"Wars")
-
     conflicts = upload_vertices(conflicts,g,"Conflicts")
 
     fathers = upload_edges(related_with,"child",royals,"father",royals,g,"related_with","type","father")
     mothers = upload_edges(related_with,"child",royals,"mother",royals,g,"related_with","type","mother")
-
     ruled = upload_edges(ruled,"person_id",royals,"country_id",countries,g,"ruled",None,None)
-    #print(ruled)
-    
-
     participated_in = upload_edges(participated_in,'country_id',countries,'conflict_id',conflicts,g,"participated_in",None,None)
-
-    
-
     part_of = upload_edges(part_of,'conflict_id',conflicts,'war_id',wars,g,"part_of",None,None)
 
     
