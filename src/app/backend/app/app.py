@@ -41,24 +41,30 @@ def getFilteredRoyals(id,filters):
     royal = g.V(id).hasLabel("Royals")
     
     if(filters['ancestors'].get('generation') != None):
-        for i in range(filters['ancestors'].get('generation')):
-            result.append(royal.out('related_with').toList())
-        print(result)
+        # ancestors = g.V(id).hasLabel("Royals").repeat(__.in_('related_with').dedup()).times(2).emit().hasLabel('Royals').valueMap().toList()
+        print('ancestors gen')
     elif(filters['ancestors'].get('year') != None):
-        print('bubuj')
+        print('ancestors year')
 
     if(filters['descendants'].get('generation') != None):
-        print('hb')
+        print('descendants gen')
     elif(filters['descendants'].get('year') != None):
-        print('bubuj')
+        print('descendants year')
 
     if(filters['contemporaries'] != []):
-        print('wejne')
+        for contemporary in filters['contemporaries']:
+            royal = g.V(contemporary['id']).hasLabel("Royals").valueMap("name", "year_birth", "year_death").toList()
+            royal[0]['kinship'] = 'Contemporary'
+
+            if royal[0] not in result: 
+                result.append(royal[0])
+
 
     if(filters['siblings']):
         print('ihbsi')
         
-    return []
+    print(result)
+    return result
 
 @app.route("/getFilteredCountries/<id>/<filters>")
 def getFilteredCountries(id,filters):
@@ -76,7 +82,7 @@ def getFilteredCountries(id,filters):
 
     return []
 
-# TODO
+
 @app.route("/getMonarchInfo/<id>")
 def getMonarchInfo(id):
     country = g.V(id).hasLabel("Royals").out("ruled").hasLabel("Countries").valueMap("name").toList()

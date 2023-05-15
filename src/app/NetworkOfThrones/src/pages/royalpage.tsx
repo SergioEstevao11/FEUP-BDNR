@@ -19,7 +19,7 @@ export default function RoyalPage() {
     const [endRuling, setEndRuling] = useState('');
     const [country, setCountry] = useState('-');
 
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState<any[]>([]);
 
     React.useEffect(() => {
       const fetchRoyalInfo = async () => {
@@ -53,6 +53,7 @@ export default function RoyalPage() {
       const response = await fetch(`http://127.0.0.1:5000/getFilteredRoyals/${id}/${filters}`);
       const data = await response.json();
 
+      console.log(data);
       setResults(data);
     };
 
@@ -98,7 +99,7 @@ export default function RoyalPage() {
         <div id="royal-filter-view" className='mb-10'>
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
-              <RoyalFilters id={id} birthYear={birthYear} deathYear={deathYear} callback={applyFilters} />
+              <RoyalFilters id={id} birthYear={birthYear} deathYear={deathYear} callback={applyFilters} reset={() => setResults([])}/>
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">
@@ -134,20 +135,22 @@ export default function RoyalPage() {
                       </tr>
                   </thead>
                   <tbody>
-                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          Maria José
+                  {results.map((royal) => (
+                    <tr
+                      key={royal.name}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        {royal.name}
                       </th>
-                      <td className="px-6 py-4 text-center">
-                          2001
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                          nunca sou imortal
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                          Rainha do Mundo
-                      </td>
-                  </tr>
+                      <td className="px-6 py-4 text-center">{royal.year_birth == '' ?  '-' : parseInt(royal.year_birth)}</td>
+                      <td className="px-6 py-4 text-center">{royal.year_death == '' ? '-' :  parseInt(royal.year_death)}</td>
+                      <td className="px-6 py-4 text-center">{royal.kinship}</td>
+                    </tr>
+                  ))}
                   </tbody>
                 </table>
                : <NodeView></NodeView>

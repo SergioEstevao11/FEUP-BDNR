@@ -31,10 +31,11 @@ interface RoyalProps {
   birthYear: number;
   deathYear: number;
   callback : (value: string) => void;
+  reset : () => void;
 }
 
 
-const RoyalFilters = ({id, birthYear, deathYear, callback} : RoyalProps): JSX.Element => {
+const RoyalFilters = ({id, birthYear, deathYear, callback, reset} : RoyalProps): JSX.Element => {
 
   const [blockAncestorYear, setBlockAncestorYear] = useState<boolean>(false);
   const [blockDescendantYear, setBlockDescendantYear] = useState<boolean>(false);
@@ -54,6 +55,23 @@ const RoyalFilters = ({id, birthYear, deathYear, callback} : RoyalProps): JSX.El
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const [siblings, setSiblings] = useState<boolean>(false);
+
+  const resetFilters = () => {
+    setExpandedAncestors(false)
+    setGenAncestorsValue(1)
+    setYearAncestorsValue([1000, 2003])
+
+    setExpandedDescendants(false)
+    setGenDescendantsValue(1)
+    setYearDescendantsValue([1000, 2003])
+
+    setExpandedContemporaries(false)
+    setSelectedOptions([])
+
+    setSiblings(false)
+
+    reset();
+  }
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -95,7 +113,6 @@ const RoyalFilters = ({id, birthYear, deathYear, callback} : RoyalProps): JSX.El
   const handleToggleContemporaries = () => {
     setExpandedContemporaries(!expandedContemporaries);
   };
-
 
   const handleFilters = () => {
     const filters = {
@@ -178,7 +195,8 @@ const RoyalFilters = ({id, birthYear, deathYear, callback} : RoyalProps): JSX.El
       </div>
 
     <div className='m-10'>
-      <Button variant="contained" className='w-full' style={{ backgroundColor: '#108768', color: 'white'}} onClick={handleFilters}>Filter</Button>
+    <Button variant="contained" className='w-full' style={{ backgroundColor: '#108768', color: 'white'}} onClick={handleFilters}>Filter</Button>
+      <Button variant="outlined" className='w-full' style={{ borderColor: '#108768', backgroundColor: 'white', color: '#108768', marginTop: '10px'}} onClick={resetFilters}>Reset</Button>
     </div>
     </div>
   );
