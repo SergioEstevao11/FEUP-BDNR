@@ -1,19 +1,43 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import MultiSelect from 'multiselect-react-dropdown';
 import RangeSlider from './range';
 
-const ConflictFilters = (): JSX.Element => {
+interface ConflictProps {
+  id: string | undefined;
+}
+
+const ConflictFilters = ({id} : ConflictProps): JSX.Element => {
 
   const [expandedYear, setExpandedYear] = useState<boolean>(false);
-  const [yearValue, setYearValue] = useState([1500,1870]); // mudar para o min ano ou o ano a meio da range
+  const [yearValue, setYearValue] = useState([1100,1903]); // mudar para o min ano ou o ano a meio da range
 
   const [expandedCountry, setExpandedCountry] = useState<boolean>(false);
-  const optionsCountry = [{name: 'Option 1', value: 'option1'}, {name: 'Option 2', value: 'option2'}, {name: 'Option 3', value: 'option3'}];
+  const [optionsCountry, setOptionsCountry] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState([]);
 
   const [expandedType, setExpandedType] = useState<boolean>(false);
-  const optionsType= [{name: 'Option 1', value: 'option1'}, {name: 'Option 2', value: 'option2'}, {name: 'Option 3', value: 'option3'}];
+  const [optionsType, setOptionsType] = useState([]);
   const [selectedType, setSelectedType] = useState([]);
+
+
+  React.useEffect(() => {
+    const fetchCountryOptions = async () => {
+      const response = await fetch(`http://127.0.0.1:5000/getConflictCountries/${id}`);
+      const data = await response.json();
+
+      setOptionsCountry(data);
+    };
+
+    const fetchConflictType = async () => {
+      const response = await fetch(`http://127.0.0.1:5000/getConflictType/${id}`);
+      const data = await response.json();
+
+      setOptionsType(data);
+    };
+
+    fetchCountryOptions();
+    fetchConflictType();
+  }, []);
 
   const onSelectCountry = (selectedList : []) => {
     setSelectedCountry(selectedList);
@@ -54,7 +78,7 @@ const ConflictFilters = (): JSX.Element => {
         </button>
       </h2>
       <div id="conflict-year-body" className={`${expandedYear ? '' : 'hidden'} my-2 mx-10`} aria-labelledby="conflict-year">
-        <RangeSlider year={[1458,1912]} minDistance={50} value={yearValue} setValue={setYearValue}></RangeSlider>
+        <RangeSlider year={[1000,2003]} minDistance={50} value={yearValue} setValue={setYearValue}></RangeSlider>
       </div>
       <h2 id="conflict-country">
         <button type="button" className="flex items-center justify-between w-full font-medium text-left text-gray-500  dark:border-gray-700 dark:text-gray-400" data-accordion-target="#rconflict-country-body"

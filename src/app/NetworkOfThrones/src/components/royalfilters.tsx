@@ -27,20 +27,22 @@ const SimpleSlider = styled(Slider)({
 
 interface RoyalProps {
   id: string | undefined;
+  birthYear: number;
+  deathYear: number;
 }
 
 
-const RoyalFilters = ({id} : RoyalProps): JSX.Element => {
+const RoyalFilters = ({id, birthYear, deathYear} : RoyalProps): JSX.Element => {
 
   const [expandedAncestors, setExpandedAncestors] = useState<boolean>(false);
   const [activeAncestors, setActiveAncestors] = useState('generation');
   const [genAncestorsValue, setGenAncestorsValue] = useState<number>(1);
-  const [yearAncestorsValue, setYearAncestorsValue] = useState([1500,1870]); // mudar para o min ano ou o ano a meio da range
+  const [yearAncestorsValue, setYearAncestorsValue] = useState([1000, 1400]); // mudar para o min ano ou o ano a meio da range
 
   const [expandedDescendants, setExpandedDescendants] = useState<boolean>(false);
   const [activeDescendants, setActiveDescendants] = useState('generation');
   const [genDescendantsValue, setGenDescendantsValue] = useState(1);
-  const [yearDescendantsValue, setYearDescendantsValue] = useState([1500,1870]); // mudar para o min ano ou o ano a meio da range
+  const [yearDescendantsValue, setYearDescendantsValue] = useState([1500,2003]); // mudar para o min ano ou o ano a meio da range
 
   const [expandedContemporaries, setExpandedContemporaries] = useState<boolean>(false);
   const [options, setOptions] = useState([]);
@@ -55,6 +57,15 @@ const RoyalFilters = ({id} : RoyalProps): JSX.Element => {
     };
     fetchData();
   }, []);
+
+  React.useEffect(() => {
+    if(!isNaN(birthYear))
+      setYearAncestorsValue([birthYear - 100, birthYear])
+
+    if(!isNaN(deathYear))
+      setYearDescendantsValue([deathYear, deathYear + 100])
+
+  }, [birthYear, deathYear])
 
   const onSelect = (selectedList : []) => {
     setSelectedOptions(selectedList);
@@ -95,7 +106,7 @@ const RoyalFilters = ({id} : RoyalProps): JSX.Element => {
           <SimpleSlider defaultValue={1} step={1} marks={[{label:1, value:1},{label:2, value:2},{label:3,value:3}]} min={1} max={3} value={genAncestorsValue} onChange={ (e, val) => setGenAncestorsValue(Array.isArray(val) ? val[0] : val) }  />
         </div>
         <div className={`${activeAncestors == 'year' ? '' : 'hidden'} my-2 mx-10`}>
-          <RangeSlider year={[1458,1912]} minDistance={50} value={yearAncestorsValue} setValue={setYearAncestorsValue}></RangeSlider>
+          <RangeSlider year={[1000,isNaN(birthYear) ? 1400 : birthYear]} minDistance={5} value={yearAncestorsValue} setValue={setYearAncestorsValue}></RangeSlider>
         </div>
       </div>
       <h2 id="royal-descendants">
@@ -114,7 +125,7 @@ const RoyalFilters = ({id} : RoyalProps): JSX.Element => {
           <SimpleSlider defaultValue={1} step={1} value={genDescendantsValue} marks={[{label:1, value:1},{label:2, value:2},{label:3,value:3}]} min={1} max={3} onChange={ (e, val) => setGenDescendantsValue(Array.isArray(val) ? val[0] : val) }  />
         </div>
         <div className={`${activeDescendants == 'year' ? '' : 'hidden'} my-2 mx-10`}>
-          <RangeSlider year={[1458,1912]} minDistance={50} value={yearDescendantsValue} setValue={setYearDescendantsValue}></RangeSlider>
+          <RangeSlider year={[isNaN(deathYear) ? 1500 : deathYear, 2003]} minDistance={5} value={yearDescendantsValue} setValue={setYearDescendantsValue}></RangeSlider>
         </div>
       </div>
       <h2 id="royal-contemporaries">
