@@ -43,39 +43,31 @@ def parse_related_to():
     related_with_processed.to_csv(FINAL_FOLDER + "related_with_processed.csv", index=False)
 
 def parse_royals():
-    royals = pd.read_csv(RAW_FOLDER + "master_data/Shortest Path Death Covariates.csv")
-    royals_expanded = pd.read_csv(RAW_FOLDER + "updated_royal_dates.csv")
-    #export a csv with the following attributes: id, name, year_birth, year_death, dinasty
-    royals_processed = pd.DataFrame(columns=["id", "name", "year_birth", "year_death", "dinasty"])
-    bar = Bar("royals", max=royals.shape[0] + royals_expanded.shape[0])
-    for index, row in royals.iterrows():
-        bar.next()
-        id = row["Person ID"]
-        name = row["Name"]
-        year_birth = int(royals_expanded.loc[royals_expanded["Person ID"] == id, "Birth Year"].values[0])
-        year_death = row["Year of Death"]
-        dinasty = row["Country-Dynasty Association"]
-        new_row = {"id": id, "name": name, "year_birth": year_birth, "year_death": year_death, "dinasty": dinasty}
-        royals_processed = pd.concat([royals_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
-    
+    royals_expanded = pd.read_csv(RAW_FOLDER + "extra_royals.csv")
+    royals_processed = pd.DataFrame(columns=["id", "name", "year_birth", "year_death", "family"])
+    bar = Bar("royals", max=royals_expanded.shape[0])
 
 
     for index, row in royals_expanded.iterrows():
-        if row["Person ID"] in royals_processed["id"].values:
-            continue
         bar.next()
         id = row["Person ID"]
-        name = row["Name"].replace("/", " ").replace("  ", " ").strip()
+        name = row["Name"].replace("/", "").replace("  ", " ")
         if "__" in name.split(" ")[-1]:
             #join name except for the last part
-            dinasty = name.split(" ")[-2]
+            family = name.split(" ")[-2]
             name = "".join(name.split(" ")[:-1])
         else:
-            dinasty = name.split(" ")[-1]
+            family = name.split(" ")[-1]
         year_birth = row["Birth Year"]
         year_death = row["Death Year"]
 
-        new_row = {"id": id, "name": name, "year_birth": year_birth, "year_death": year_death, "dinasty": dinasty}
+        if name == "_____":
+            name = "???"
+        
+        if family == "_____":
+            family = "???"
+
+        new_row = {"id": id, "name": name, "year_birth": year_birth, "year_death": year_death, "title": row["Title"], "family": family}
         royals_processed = pd.concat([royals_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
     
     royals_processed.to_csv(FINAL_FOLDER + "royals_processed.csv", index=False)
