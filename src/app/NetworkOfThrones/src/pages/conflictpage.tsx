@@ -13,7 +13,7 @@ export default function ConflictPage() {
     const [fatalities, setFatalities] = useState('-');
     const [capital, setCapital] = useState('-');
 
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState<any[]>([]);
 
     React.useEffect(() => {
       const fetchCountry = async () => {
@@ -73,7 +73,7 @@ export default function ConflictPage() {
         <div id="royal-filter-view" className='mb-10'>
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
-              <ConflictFilters id={id} callback={applyFilters}/>
+              <ConflictFilters id={id} callback={applyFilters} reset={() => setResults([])}/>
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">
@@ -95,34 +95,36 @@ export default function ConflictPage() {
                   <thead className="text-white uppercase bg-janus">
                       <tr>
                         <th scope="col-6" className="px-6 py-3 text-left">
-                            Name
+                            Country
                         </th>
                         <th scope="col-2" className="px-6 py-3 text-center">
-                            Birth Year
+                            War Name
                         </th>
                         <th scope="col-2" className="px-6 py-3 text-center">
-                            Death Year
+                            Year
                         </th>
                         <th scope="col-2" className="px-6 py-3 text-center">
-                            Kinship
+                            Type
                         </th>
                       </tr>
                   </thead>
                   <tbody>
-                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          Maria José
+                  {results.map((conflict) => (
+                    <tr
+                      key={conflict.year}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        {conflict.country}
                       </th>
-                      <td className="px-6 py-4 text-center">
-                          2001
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                          nunca sou imortal
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                          Rainha do Mundo
-                      </td>
-                  </tr>
+                      <td className="px-6 py-4 text-center">{conflict.name}</td>
+                      <td className="px-6 py-4 text-center">{conflict.year == '' ? '-' :  parseInt(conflict.year)}</td>
+                      <td className="px-6 py-4 text-center">{conflict.type}</td>
+                    </tr>
+                  ))}
                   </tbody>
                 </table>
                 : <NodeView></NodeView>}

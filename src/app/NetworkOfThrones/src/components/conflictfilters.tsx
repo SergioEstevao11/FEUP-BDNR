@@ -6,9 +6,10 @@ import Button from '@mui/material/Button';
 interface ConflictProps {
   id: string | undefined;
   callback : (value: string) => void;
+  reset : () => void;
 }
 
-const ConflictFilters = ({id, callback} : ConflictProps): JSX.Element => {
+const ConflictFilters = ({callback, reset} : ConflictProps): JSX.Element => {
 
   const [expandedYear, setExpandedYear] = useState<boolean>(false);
   const [yearValue, setYearValue] = useState([1100,1903]); // mudar para o min ano ou o ano a meio da range
@@ -20,6 +21,19 @@ const ConflictFilters = ({id, callback} : ConflictProps): JSX.Element => {
   const [expandedType, setExpandedType] = useState<boolean>(false);
   const [optionsType, setOptionsType] = useState([]);
   const [selectedType, setSelectedType] = useState([]);
+
+  const resetFilters = () => {
+    setExpandedYear(false)
+    setYearValue([1100,1903])
+
+    setExpandedCountry(false)
+    setSelectedCountry([])
+
+    setExpandedType(false)
+    setSelectedType([])
+
+    reset();
+  }
 
 
   React.useEffect(() => {
@@ -120,6 +134,7 @@ const ConflictFilters = ({id, callback} : ConflictProps): JSX.Element => {
       </div>
       <div className='m-10'>
         <Button variant="contained" className='w-full' style={{ backgroundColor: '#108768', color: 'white'}} onClick={handleFilters}>Filter</Button>
+        <Button variant="outlined" className='w-full' style={{ borderColor: '#108768', backgroundColor: 'white', color: '#108768', marginTop: '10px'}} onClick={resetFilters}>Reset</Button>
       </div>
     </div>
   );
