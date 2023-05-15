@@ -1,8 +1,13 @@
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
+from gremlin_python.process.graph_traversal import __
+from gremlin_python.process.strategies import *
+from gremlin_python.process.traversal import T
 import pandas as pd
 from progress.bar import Bar
 import sys
+import time
+
 
 
 def upload_vertices(data_frame, graph, label):
@@ -39,21 +44,27 @@ def upload_edges(data_frame, col_out, verts_out, col_in, verts_in, g, label,prop
 
         if(vertex_in is None or vertex_out is None):
             continue
-
-        edge = g.addE(label).from_(vertex_out[1]).to(vertex_in[1])
+        print("here")
+        #edge = g.addE(label).from_(vertex_out[1]).to(vertex_in[1])
+        edge = g.V(vertex_out[1]).addE(label).to(vertex_in[1])
+        print("jj")
         if(property != None):
                         edge = edge.property(property_name,property)
+        print("jj1")
 
         for col in data_frame.columns:
             
-            
+            print("jj2")
+
             if col in [col_in, col_out] or pd.isna(row[col]):
+                print("jj4")
                 continue
             else:
-                
+                print(type(row[col].item()))
                 edge = edge.property(col,row[col].item())
 
-        
+        print("jj5")
+
         edges.append(edge.iterate())
         
     
@@ -75,14 +86,11 @@ def main():
     try:
         g = traversal().with_remote(DriverRemoteConnection(
             'ws://127.0.0.1:8182/gremlin', 'g'))
-        g.V().hasNext()
     except Exception:
          print("[ERROR] JanusGraph unavailable - cancelling data load")
          sys.exit(1)
-
-
+    time.sleep(1)
     g.V().drop().iterate()
-
     print(g.V().toList())
     
     royals = upload_vertices(royals,g,"Royals")
@@ -95,12 +103,6 @@ def main():
     ruled = upload_edges(ruled,"person_id",royals,"country_id",countries,g,"ruled",None,None)
     participated_in = upload_edges(participated_in,'country_id',countries,'conflict_id',conflicts,g,"participated_in",None,None)
     part_of = upload_edges(part_of,'conflict_id',conflicts,'war_id',wars,g,"part_of",None,None)
-
-    
-
-    #print(g.V().toList())
-    
-
     
 
 if __name__ == '__main__':
