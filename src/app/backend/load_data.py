@@ -24,7 +24,7 @@ def find_vertex(vertices, id):
             return vertex
     return None
 
-def upload_edges(data_frame, col_in, verts_in, col_out, verts_out, g, label,property_name,property):
+def upload_edges(data_frame, col_out, verts_out, col_in, verts_in, g, label,property_name,property):
     edges = []
     bar = Bar(label, max=data_frame.shape[0])
     for i, row in data_frame.iterrows():
@@ -34,29 +34,26 @@ def upload_edges(data_frame, col_in, verts_in, col_out, verts_out, g, label,prop
         id_out = row[col_out]
 
         vertex_in = find_vertex(verts_in,id_in)
-        
         vertex_out = find_vertex(verts_out,id_out)
-        
-
-        
 
         if(vertex_in is None or vertex_out is None):
             continue
 
         edge = g.addE(label).from_(vertex_out[1]).to(vertex_in[1])
+        if(property != None):
+                        edge = edge.property(property_name,property)
 
         for col in data_frame.columns:
-            if(property != None):
-                edge = edge.property(property_name,property)
             
+            
+            if col in [col_in, col_out] or pd.isna(row[col]):
+                continue
             else:
+                
+                edge = edge.property(col,row[col].item())
 
-                if col in (col_in, col_out) or pd.isna(row[col]):
-                    continue
-                edge = edge.property(col,row[col])
-            
-
-        edges.append(edge)
+        
+        edges.append(edge.iterate())
         
     
     bar.finish()
@@ -79,29 +76,34 @@ def main():
     g = traversal().with_remote(DriverRemoteConnection(
         'ws://127.0.0.1:8182/gremlin', 'g'))
 
+    g.V().drop().iterate()
 
     print(g.V().toList())
     
-    royals = upload_vertices(royals,g,"Royal")
+    royals = upload_vertices(royals,g,"Royals")
 
-    countries = upload_vertices(countries,g,"Country")
+    countries = upload_vertices(countries,g,"Countries")
 
-    wars = upload_vertices(wars,g,"War")
+    wars = upload_vertices(wars,g,"Wars")
 
-    conflicts = upload_vertices(conflicts,g,"Conflict")
+    conflicts = upload_vertices(conflicts,g,"Conflicts")
 
     fathers = upload_edges(related_with,"child",royals,"father",royals,g,"related_with","type","father")
     mothers = upload_edges(related_with,"child",royals,"mother",royals,g,"related_with","type","mother")
 
     ruled = upload_edges(ruled,"person_id",royals,"country_id",countries,g,"ruled",None,None)
+    #print(ruled)
+    
 
     participated_in = upload_edges(participated_in,'country_id',countries,'conflict_id',conflicts,g,"participated_in",None,None)
+
+    
 
     part_of = upload_edges(part_of,'conflict_id',conflicts,'war_id',wars,g,"part_of",None,None)
 
     
 
-    print(g.V().toList())
+    #print(g.V().toList())
     
 
     
