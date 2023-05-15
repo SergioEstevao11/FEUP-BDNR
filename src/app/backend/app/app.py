@@ -42,11 +42,6 @@ def getFatalities(id):
     return {'total_fatalities': 100}
 
 # TODO
-@app.route("/getConflictCountries/<id>")
-def getConflictCountries(id):
-    return []
-
-# TODO
 @app.route("/getConflictTypes")
 def getConflictType():
     types = g.V().hasLabel("Conflicts").valueMap('type').dedup().toList()
