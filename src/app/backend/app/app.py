@@ -34,6 +34,13 @@ def getRoyal(id):
 def getFatalities(id):
     return {'total_fatalities': 100}
 
+@app.route("/getConflictCountries/<id>")
+def getConflictCountries(id):
+    return []
+
+@app.route("/getConflictType/<id>")
+def getConflictType(id):
+    return []
 
 @app.route("/getContemporaries/<id>")
 def getContemporaries(id):
