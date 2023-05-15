@@ -38,6 +38,6 @@ def getFatalities(id):
 @app.route("/getContemporaries/<id>")
 def getContemporaries(id):
     royal = g.V().hasLabel("Royal").has('id', id).valueMap().next()
-    contemporaries = g.V().in_('Royal').has('year_birth', P.lte(royal['year_death'][0])).has('year_death', P.gte(royal['year_birth'][0])).dedup().values('name').toList()
+    contemporaries = g.V().hasLabel('Royal').has('year_birth', P.lte(royal['year_death'][0])).has('year_death', P.gte(royal['year_birth'][0])).dedup().valueMap('name', 'id').toList()
     print(contemporaries)
     return contemporaries
