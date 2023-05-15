@@ -13,6 +13,7 @@ export default function ConflictPage() {
     const [fatalities, setFatalities] = useState('-');
     const [capital, setCapital] = useState('-');
 
+    const [results, setResults] = useState([]);
 
     React.useEffect(() => {
       const fetchCountry = async () => {
@@ -33,8 +34,11 @@ export default function ConflictPage() {
       fetchFatalities();
     }, []);
 
-    const applyFilters = (filters : string) => {
-      console.log(filters)
+    const applyFilters = async (filters : string) => {
+      const response = await fetch(`http://127.0.0.1:5000/getFilteredCountries/${filters}`);
+      const data = await response.json();
+
+      setResults(data);
     };
 
     return (

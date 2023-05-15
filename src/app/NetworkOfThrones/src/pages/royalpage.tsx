@@ -19,6 +19,8 @@ export default function RoyalPage() {
     const [endRuling, setEndRuling] = useState('');
     const [country, setCountry] = useState('-');
 
+    const [results, setResults] = useState([]);
+
     React.useEffect(() => {
       const fetchRoyalInfo = async () => {
         const response = await fetch(`http://127.0.0.1:5000/getRoyal/${id}`);
@@ -47,8 +49,11 @@ export default function RoyalPage() {
 
     }, []);
 
-    const applyFilters = (filters : string) => {
-      console.log(filters)
+    const applyFilters = async (filters : string) => {
+      const response = await fetch(`http://127.0.0.1:5000/getFilteredRoyals/${filters}`);
+      const data = await response.json();
+
+      setResults(data);
     };
 
     return (

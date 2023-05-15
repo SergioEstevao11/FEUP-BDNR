@@ -29,7 +29,7 @@ export default function Search({label} : SearchProps) {
 
   return (
     <React.Fragment>
-      <Autocomplete value={value} options={options} getOptionLabel={(option: OptionType) => option.name[0]} 
+      <Autocomplete value={value} options={options} getOptionLabel={(option: OptionType) => option.name} 
         renderOption={(props, option) => <li {...props} key={option.id}>{option.name}</li>}
         onChange={handleChange}
         selectOnFocus clearOnBlur handleHomeEndKeys sx={{ width: 300 }}
