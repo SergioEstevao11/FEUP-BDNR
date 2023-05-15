@@ -1,5 +1,7 @@
 import pandas as pd
 import argparse
+from progress.bar import Bar
+
 
 FINAL_FOLDER = "./processed_data/"
 RAW_FOLDER = "./raw_data/"
@@ -17,7 +19,9 @@ def parse_related_to():
     families = pd.read_csv(RAW_FOLDER + "families.csv")
     families = families.loc[:, ~families.columns.str.contains('^Unnamed')]
     related_with_processed = pd.DataFrame(columns=["father", "mother", "child"])
+    bar = Bar("related_to", max=related_with_processed.shape[0])
     for index, row in families.iterrows():
+        bar.next()
         father = row["Husband"]
         mother = row["Wife"]
         children = row.filter(regex="Child").dropna().values
@@ -34,6 +38,7 @@ def parse_related_to():
             new_row = {"father": father_proc, "mother": mother_proc , "child": child_proc }
             related_with_processed = pd.concat([related_with_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
 
+    bar.finish
 
     related_with_processed.to_csv(FINAL_FOLDER + "related_with_processed.csv", index=False)
 
@@ -42,7 +47,9 @@ def parse_royals():
     royals_expanded = pd.read_csv(RAW_FOLDER + "updated_royal_dates.csv")
     #export a csv with the following attributes: id, name, year_birth, year_death, dinasty
     royals_processed = pd.DataFrame(columns=["id", "name", "year_birth", "year_death", "dinasty"])
+    bar = Bar("royals", max=royals.shape[0] + royals_expanded.shape[0])
     for index, row in royals.iterrows():
+        bar.next()
         id = row["Person ID"]
         name = row["Name"]
         year_birth = int(royals_expanded.loc[royals_expanded["Person ID"] == id, "Birth Year"].values[0])
@@ -56,7 +63,7 @@ def parse_royals():
     for index, row in royals_expanded.iterrows():
         if row["Person ID"] in royals_processed["id"].values:
             continue
-
+        bar.next()
         id = row["Person ID"]
         name = row["Name"].replace("/", " ").replace("  ", " ").strip()
         if "__" in name.split(" ")[-1]:
@@ -77,10 +84,11 @@ def parse_royals():
 def parse_ruled():
     rulers = pd.read_csv(RAW_FOLDER + "master_data/Ruler+Adjacency.csv")
     ruled_processed = pd.DataFrame(columns=["country_id", "person_id", "year_start", "year_end"])
-
+    bar = Bar("ruled", max=rulers.shape[0])
     
     countries = dict()
     for index, row in rulers.iterrows():
+        bar.next()
         country_id = row["Country ID"]
         person_id = row["Person ID"]
 
@@ -114,6 +122,8 @@ def parse_ruled():
             new_row = {"country_id": country_id, "person_id": person_id, "year_start": int(year_start), "year_end": int(year_end)}
             ruled_processed = pd.concat([ruled_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
 
+    bar.finish
+
     ruled_processed.to_csv(FINAL_FOLDER + "ruled_processed.csv", index=False)
 
 
@@ -122,11 +132,13 @@ def parse_countries():
     rulers = pd.read_csv(RAW_FOLDER + "master_data/Ruler+Adjacency.csv")
     countries_processed = pd.DataFrame(columns=["id", "name", "religion", "capital", "capital_latitude", "capital_longitude"])
     countries = dict()
+    bar = Bar("countries", max=rulers.shape[0])
     for index, row in rulers.iterrows():
         if row["Country ID"] not in rulers.keys():
             countries[row["Country ID"]] = row
 
     for country_id in countries.keys():
+        bar.next()
         country_name = countries[country_id]["Country Name"]
         religion = countries[country_id]["Religion"]
         capital_name = countries[country_id]["Capital_Name"]
@@ -136,6 +148,7 @@ def parse_countries():
         new_row = {"id": country_id, "name": country_name, "religion": religion, "capital": capital_name, "capital_latitude": lat, "capital_longitude": lon}
         countries_processed = pd.concat([countries_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
 
+    bar.finish()
     countries_processed.to_csv(FINAL_FOLDER + "countries_processed.csv", index=False)
 
 
@@ -145,7 +158,9 @@ def parse_participated_in():
     conflicts = pd.read_csv(RAW_FOLDER + "master_data/Final War Dyads.csv")
 
     participated_in_processed = pd.DataFrame(columns=["conflict_id", "country_id"])
+    bar = Bar("participated_in", max=conflicts.shape[0])
     for index, row in conflicts.iterrows():
+        bar.next()
         conflict_id = index
         country_id_state1 = row["State 1 ID"]
         country_id_state2 = row["State 2 ID"]
@@ -154,7 +169,7 @@ def parse_participated_in():
         participated_in_processed = pd.concat([participated_in_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
         new_row = {"conflict_id": conflict_id, "country_id": country_id_state2}
         participated_in_processed = pd.concat([participated_in_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
-
+    bar.finish()
     participated_in_processed.to_csv(FINAL_FOLDER + "participated_in_processed.csv", index=False)
 
 def parse_conflicts():
@@ -182,13 +197,17 @@ def parse_part_of():
     wars = pd.read_csv(RAW_FOLDER + "master_data/Deaths at War Level.csv")
     part_of_processed = pd.DataFrame(columns=["war_id", "conflict_id"])
 
+    bar = Bar("part_of", max=wars.shape[0])
+
     for index, row in wars.iterrows():
+        bar.next()
         war_id = row["War Num"]
         conflict_id = index
 
         new_row = {"war_id": war_id, "conflict_id": conflict_id}
         part_of_processed = pd.concat([part_of_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
 
+    bar.finish()
     part_of_processed.to_csv(FINAL_FOLDER + "part_of_processed.csv", index=False)
 
 def parse_war():
@@ -196,7 +215,10 @@ def parse_war():
     conflicts = pd.read_csv(RAW_FOLDER + "master_data/Final War Dyads.csv")
     wars_processed = pd.DataFrame(columns=["id", "name", "year_start", "deaths"])
 
+    bar = Bar("wars", max=wars.shape[0])
+
     for index, row in wars.iterrows():
+        bar.next()
         #check if War Num exists in wars_processed
         if row["War Num"] not in wars_processed["id"].values:
             if row["Brecke War Name 1"] == "0":
@@ -216,6 +238,7 @@ def parse_war():
     #         new_row = {"id": row["War Num (Hard)"], "name": war_name, "year_start": row["Year"], "deaths": "undefined"}
     #         wars_processed = pd.concat([wars_processed, pd.DataFrame(new_row, index=[0])], ignore_index=True)
     
+    bar.finish()
     wars_processed.to_csv(FINAL_FOLDER + "wars_processed.csv", index=False)
 
 
@@ -235,7 +258,6 @@ def parse_args():
 
 
 #TODO: add all the brecke war names to the wars_processed.csv: make "name" a list of names
-#TODO: finish missing edge parsers
 
 if __name__ == "__main__":
     args = parse_args()
@@ -252,8 +274,8 @@ if __name__ == "__main__":
         parse_war()
         print("[SUCCESS] Wars parsed")
     if args.edges or args.all:
-        #parse_related_to()
-        #parse_ruled()
-        #parse_participated_in()
+        parse_related_to()
+        parse_ruled()
+        parse_participated_in()
         parse_part_of()
         print("[SUCCESS] Edges parsed")
