@@ -146,10 +146,6 @@ const RoyalFilters = ({id, birthYear, deathYear} : RoyalProps): JSX.Element => {
         <input id="siblings-checkbox" type="checkbox" value="" className="w-4 h-4 text-janus  accent-janus bg-gray-100 border-gray-300 rounded focus:ring-janus dark:focus:ring-janus dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
         <label htmlFor="siblings-checkbox" className="ml-2 font-medium text-gray-500 dark:text-gray-300">Siblings</label>
       </div>
-      <div className="flex items-center px-5 py-3">
-        <input id="dinasty-checkbox" type="checkbox" value="" className="w-4 h-4 text-janus  accent-janus bg-gray-100 border-gray-300 rounded focus:ring-janus dark:focus:ring-janus dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-        <label htmlFor="dinasty-checkbox" className="ml-2 font-medium text-gray-500 dark:text-gray-300">Shared Dinasty</label>
-      </div>
     </div>
   );
 };
