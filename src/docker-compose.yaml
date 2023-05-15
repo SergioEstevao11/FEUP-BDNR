@@ -24,7 +24,10 @@ services:
     user: root
     ports:
       - "5001:80"
+
   react-app:
     build: ./app/NetworkOfThrones
+    container_name: "bdnr-frontend"
     ports:
-      - "6001:3000"
+      - "6001:5173"
+    
