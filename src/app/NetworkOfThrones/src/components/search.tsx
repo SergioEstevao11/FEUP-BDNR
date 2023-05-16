@@ -14,7 +14,7 @@ export default function Search({label} : SearchProps) {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const response = label == 'Royal' ? await fetch('http://127.0.0.1:5000/getRoyals') : await fetch('http://127.0.0.1:5000/getCountries');
+      const response = label == 'Royal' ? await fetch('http://localhost:5000/getRoyals') : await fetch('http://localhost:5000/getCountries');
       const data = await response.json();
       setOptions(data.result);
     };

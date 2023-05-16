@@ -38,14 +38,14 @@ const ConflictFilters = ({callback, reset} : ConflictProps): JSX.Element => {
 
   React.useEffect(() => {
     const fetchCountryOptions = async () => {
-      const response = await fetch(`http://127.0.0.1:5000/getCountries`);
+      const response = await fetch(`http://localhost:5000/getCountries`);
       const data = await response.json();
 
       setOptionsCountry(data.result);
     };
 
     const fetchConflictType = async () => {
-      const response = await fetch(`http://127.0.0.1:5000/getConflictTypes`);
+      const response = await fetch(`http://localhost:5000/getConflictTypes`);
       const data = await response.json();
 
       setOptionsType(data);

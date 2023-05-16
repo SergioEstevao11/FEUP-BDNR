@@ -17,7 +17,7 @@ export default function ConflictPage() {
 
     React.useEffect(() => {
       const fetchCountry = async () => {
-        const response = await fetch(`http://127.0.0.1:5000/getCountry/${id}`);
+        const response = await fetch(`http://localhost:5000/getCountry/${id}`);
         const data = await response.json();
         setName(data.name);
         setCapital(data.capital);
@@ -25,7 +25,7 @@ export default function ConflictPage() {
       };
 
       const fetchFatalities = async () => {
-        const response = await fetch(`http://127.0.0.1:5000/getFatalities/${id}`);
+        const response = await fetch(`http://localhost:5000/getFatalities/${id}`);
         const data = await response.json();
         data.fatalities > 0 ? setFatalities(data.fatalities) : setFatalities('-');
       };
@@ -35,7 +35,7 @@ export default function ConflictPage() {
     }, []);
 
     const applyFilters = async (filters : string) => {
-      const response = await fetch(`http://127.0.0.1:5000/getFilteredCountries/${id}/${filters}/`);
+      const response = await fetch(`http://localhost:5000/getFilteredCountries/${id}/${filters}/`);
       const data = await response.json();
 
       setResults(data);

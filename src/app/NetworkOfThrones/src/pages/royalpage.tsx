@@ -23,7 +23,7 @@ export default function RoyalPage() {
 
     React.useEffect(() => {
       const fetchRoyalInfo = async () => {
-        const response = await fetch(`http://127.0.0.1:5000/getRoyal/${id}`);
+        const response = await fetch(`http://localhost:5000/getRoyal/${id}`);
         const data = await response.json();
 
         setName(data.name);
@@ -35,7 +35,7 @@ export default function RoyalPage() {
       };
 
       const fetchMonarchInfo = async () => {
-        const response = await fetch(`http://127.0.0.1:5000/getMonarchInfo/${id}`);
+        const response = await fetch(`http://localhost:5000/getMonarchInfo/${id}`);
         const data = await response.json();
 
         data.country? setCountry(data.country) : setCountry('-');
@@ -50,7 +50,7 @@ export default function RoyalPage() {
     }, []);
 
     const applyFilters = async (filters : string) => {
-      const response = await fetch(`http://127.0.0.1:5000/getFilteredRoyals/${id}/${filters}`);
+      const response = await fetch(`http://localhost:5000/getFilteredRoyals/${id}/${filters}`);
       const data = await response.json();
 
       console.log(data);

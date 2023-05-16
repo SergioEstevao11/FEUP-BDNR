@@ -14,7 +14,7 @@ services:
       - janusgraph
     build: ./app/backend
     volumes:
-      - ./app:/app
+      - app:/app
     user: root
     ports:
       - "5000:5000"
@@ -59,3 +59,6 @@ services:
       - MAX_HEAP_SIZE=256M
       - HEAP_NEWSIZE=128M
     container_name: "cassandra_r1"
+
+volumes:
+  app:
