@@ -7,30 +7,19 @@ services:
     volumes:
       -  "./configs/janusgraph:/etc/opt/janusgraph:ro"
     
-    
-  cassandra:
-    image: cassandra:3
-    container_name: jc-cassandra
-    environment:
-      - CASSANDRA_START_RPC=true
-      - MAX_HEAP_SIZE=1G
-      - HEAP_NEWSIZE=256M
-    ports:
-      -  "9042:9042"
-      -  "9160:9160"
-    
 
-  # flask-app:
-  #   depends_on:
-  #     - janusgraph
-  #   build: ./app/backend
-  #   volumes:
-  #     - ./app:/app
-  #   user: root
-  #   ports:
-  #     - "5001:5000"
-  #   command: sh -c "python app/load_data.py"
-  #   container_name: "bdnr-backend"
+
+  flask-app:
+    depends_on:
+      - janusgraph
+    build: ./app/backend
+    volumes:
+      - ./app:/app
+    user: root
+    ports:
+      - "5000:5000"
+    #command: sh -c "python app/load_data.py"
+    container_name: "bdnr-backend"
 
   react-app:
     build: ./app/NetworkOfThrones
@@ -38,41 +27,35 @@ services:
     ports:
       - "6001:5173"
     
-  # cassandra_p1:
-  #   image: cassandra:3
-  #   environment:
-  #     - CASSANDRA_START_RPC=true
-  #     - MAX_HEAP_SIZE=1G
-  #     - HEAP_NEWSIZE=256M
-  #   ports:
-  #     -  "9042:9042"
-  #     -  "9160:9160"
-  #   #volumes:
-  #   #  - ./volumes/p1:/var/lib/cassandra
-  #   container_name: "cassandra_p1"
+  cassandra_p1:
+    image: cassandra:3
+    environment:
+      - CASSANDRA_START_RPC=true
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=128M
+    ports:
+      -  "9042:9042"
+      -  "9160:9160"
+    container_name: "cassandra_p1"
 
-  # cassandra_p2:
-  #   image: cassandra:3
-  #   ports:
-  #     - "9160"
-  #     - "9042"
-  #     - "7199"
-  #     - "7001"
-  #     - "7000"
-  #   environment:
-  #     - CASSANDRA_START_RPC=true
-  #     - MAX_HEAP_SIZE=1G
-  #     - HEAP_NEWSIZE=256M
-  #   #volumes:
-  #   #  - ./volumes/p2:/var/lib/cassandra
-  #   container_name: "cassandra_p2"
+  cassandra_p2:
+    image: cassandra:3
+    ports:
+      - "9160"
+      - "9042"
+      - "7199"
+      - "7001"
+      - "7000"
+    environment:
+      - CASSANDRA_START_RPC=true
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=128M
+    container_name: "cassandra_p2"
 
-  # cassandra_r1:
-  #   image: cassandra:3
-  #   environment:
-  #     - CASSANDRA_SEEDS=cassandra_p1
-  #     - MAX_HEAP_SIZE=1G
-  #     - HEAP_NEWSIZE=256M
-  #   #volumes:
-  #   #  - ./volumes/r1:/var/lib/cassandra
-  #   container_name: "cassandra_r1"
+  cassandra_r1:
+    image: cassandra:3
+    environment:
+      - CASSANDRA_SEEDS=cassandra_p1
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=128M
+    container_name: "cassandra_r1"

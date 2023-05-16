@@ -1,8 +1,6 @@
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
-from gremlin_python.process.graph_traversal import __
 from gremlin_python.process.strategies import *
-from gremlin_python.process.traversal import T
 import pandas as pd
 from progress.bar import Bar
 import sys
@@ -32,10 +30,10 @@ def find_vertex(vertices, id):
 
 def upload_edges(data_frame, col_out, verts_out, col_in, verts_in, g, label,property_name,property):
     edges = []
-    # bar = Bar(label, max=data_frame.shape[0])
+    bar = Bar(label, max=data_frame.shape[0])
     for i, row in data_frame.iterrows():
         
-        # bar.next()
+        bar.next()
         id_in = row[col_in]
         id_out = row[col_out]
 
@@ -46,8 +44,6 @@ def upload_edges(data_frame, col_out, verts_out, col_in, verts_in, g, label,prop
 
         if(vertex_in is None or vertex_out is None):
             continue
-        print("here")
-        #edge = g.addE(label).from_(vertex_out[1]).to(vertex_in[1])
         edge = g.V(vertex_out[1]).addE(label).to(vertex_in[1])
 
         if(property != None):
@@ -63,7 +59,7 @@ def upload_edges(data_frame, col_out, verts_out, col_in, verts_in, g, label,prop
         edges.append(edge.iterate())
         
     
-    # bar.finish()
+    bar.finish()
     return edges
 
 
@@ -102,11 +98,6 @@ def main():
     part_of = upload_edges(part_of,'conflict_id',conflicts,'war_id',wars,g,"part_of",None,None)
     
 
-    print('MOTHERS')
-    print(mothers != [])
-
-    print('FATHERS')
-    print(fathers != [])
 
 if __name__ == '__main__':
     main()
