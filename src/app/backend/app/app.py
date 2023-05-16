@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)
 
 g = traversal().with_remote(DriverRemoteConnection(
-        'ws://janusgraph:8182/gremlin', 'g'))
+        'ws://127.0.0.1:8182/gremlin', 'g'))
 
 @app.route("/getRoyals")
 def getRoyals():
