@@ -58,7 +58,6 @@ def upload_edges(data_frame, col_out, verts_out, col_in, verts_in, g, label,prop
             if col in [col_in, col_out] or pd.isna(row[col]):
                 continue
             else:
-                print(type(row[col].item()))
                 edge = edge.property(col,row[col].item())
 
         edges.append(edge.iterate())
@@ -104,10 +103,10 @@ def main():
     
 
     print('MOTHERS')
-    print(mothers)
+    print(mothers != [])
 
     print('FATHERS')
-    print(fathers)
+    print(fathers != [])
 
 if __name__ == '__main__':
     main()
