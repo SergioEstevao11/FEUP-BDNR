@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import royal from '../assets/royal.jpg';
 
@@ -9,40 +9,88 @@ export default function RoyalPage() {
     const { id } = useParams<{ id: string }>();
     const [active, setActive] = useState('table');
 
+    const [name, setName] = useState('');
+    const [title, setTitle] = useState('');
+    const [birthYear, setBirthYear] = useState(0);
+    const [deathYear, setDeathYear] = useState(0);
+
+    const [family, setFamily] = useState('-');
+    const [startRuling, setStartRuling] = useState('');
+    const [endRuling, setEndRuling] = useState('');
+    const [country, setCountry] = useState('-');
+
+    const [royalResults, setRoyalResults] = useState<any[]>([]);
+
+    React.useEffect(() => {
+      const fetchRoyalInfo = async () => {
+        const response = await fetch(`http://127.0.0.1:5000/getRoyal/${id}`);
+        const data = await response.json();
+
+        setName(data.name);
+        setTitle(data.title);
+        setBirthYear(parseInt(data.year_birth));
+        setDeathYear(parseInt(data.year_death));
+        setFamily(data.family);
+
+      };
+
+      const fetchMonarchInfo = async () => {
+        const response = await fetch(`http://127.0.0.1:5000/getMonarchInfo/${id}`);
+        const data = await response.json();
+
+        data.country? setCountry(data.country) : setCountry('-');
+        data.year_start? setStartRuling(data.year_start) : setStartRuling('');
+        data.year_end? setEndRuling(data.year_end) : setEndRuling('')
+
+      };
+
+      fetchRoyalInfo();
+      fetchMonarchInfo();
+
+    }, []);
+
+    const applyFilters = async (filters : string) => {
+      const response = await fetch(`http://127.0.0.1:5000/getFilteredRoyals/${id}/${filters}`);
+      const data = await response.json();
+
+      console.log(data);
+      setRoyalResults(data);
+    };
+
     return (
       <main className=' w-full bg-white justify-center m-0'>
         <div className="flex w-96 items-center justify-start ">
-          <a href="/" className="font-bold text-2xl sm:text-2xl mt-10">A Network Of Thrones</a>
+          <a href="/" className="font-bold text-2xl sm:text-2xl mt-10"> A Network Of Thrones</a>
           <a href="/" className="font-bold  sm:text-xl mt-10 text-janus px-3">Royals</a>
         </div>
         <div id="royal-info" className='flex w-full m-12'>
           <img className='w-64 h-64 rounded-full object-cover my-5 mr-10' src={royal} alt="royal" />
           <div className='flex flex-col justify-around'>
             <div>
-              <h1 id="royal-name" className="text-start text-janus font-bold"> Victoria Hanover </h1>
-              <h2 id="royal-title" className="text-start text-2xl mb-3"> Queen of England </h2>
+              <h1 id="royal-name" className="text-start text-janus font-bold"> {name} </h1>
+              <h2 id="royal-title" className="text-start text-2xl mb-3"> {title} </h2>
               <div className='flex justify-start mb-3'>
-                  <h1 className="text-start  text-3xl font-bold"> 1819 </h1>
+                  <h1 className="text-start  text-3xl font-bold"> {birthYear} </h1>
                   <h1 className="text-start  text-3xl font-bold px-2">  - </h1>
-                  <h1 className="text-start  text-3xl font-bold"> 1901 </h1>
+                  <h1 className="text-start  text-3xl font-bold"> {deathYear} </h1>
               </div>
             </div>
             <div>
-              <div className='flex justify-around items-center'>
-                <div id="royal-dinasty" className='flex mr-20'>
-                  <h2 className="text-start  text-xl font-bold"> Dinasty: </h2>
-                  <span className=" text-start  text-xl px-3 self-center"> Hanover </span>
+              <div className='flex items-center'>
+                <div id="royal-family" className='flex mr-20'>
+                  <h2 className="text-start  text-xl font-bold"> Family: </h2>
+                  <span className=" text-start  text-xl px-3 self-center"> {family} </span>
                 </div>
                 <div id="royal-ruling period" className='flex'>
                   <h2 className="text-start  text-xl font-bold px-3"> Ruling Period: </h2>
-                  <span className=" text-start  text-xl self-center"> 1837 </span>
+                  <span className=" text-start  text-xl self-center"> {startRuling} </span>
                   <span className=" text-start  text-xl px-3"> - </span>
-                  <span className=" text-start  text-xl self-center"> 1901 </span>
+                  <span className=" text-start  text-xl self-center"> {endRuling} </span>
                 </div>
               </div>
               <div id="royal-country" className='flex mt-3'>
                   <h2 className="text-start  text-xl font-bold"> Country: </h2>
-                  <span className=" text-start  text-xl px-3 self-center"> England </span>
+                  <span className=" text-start  text-xl px-3 self-center"> {country} </span>
               </div>
             </div>
           </div>
@@ -51,7 +99,7 @@ export default function RoyalPage() {
         <div id="royal-filter-view" className='mb-10'>
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
-              <RoyalFilters />
+              <RoyalFilters id={id} birthYear={birthYear} deathYear={deathYear} callback={applyFilters} reset={() => setRoyalResults([])}/>
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">
@@ -87,20 +135,22 @@ export default function RoyalPage() {
                       </tr>
                   </thead>
                   <tbody>
-                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          Maria José
+                  {royalResults.map((royal) => (
+                    <tr
+                      key={royal.name}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        {royal.name}
                       </th>
-                      <td className="px-6 py-4 text-center">
-                          2001
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                          nunca sou imortal
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                          Rainha do Mundo
-                      </td>
-                  </tr>
+                      <td className="px-6 py-4 text-center">{royal.year_birth == '' ?  '-' : parseInt(royal.year_birth)}</td>
+                      <td className="px-6 py-4 text-center">{royal.year_death == '' ? '-' :  parseInt(royal.year_death)}</td>
+                      <td className="px-6 py-4 text-center">{royal.kinship}</td>
+                    </tr>
+                  ))}
                   </tbody>
                 </table>
                : <NodeView></NodeView>

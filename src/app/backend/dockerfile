@@ -2,16 +2,26 @@
 FROM python:3.9
 
 # 
-WORKDIR /code
+WORKDIR /
 
 # 
-COPY ./requirements.txt /code/requirements.txt
+COPY ./requirements.txt /requirements.txt
 
 # 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /requirements.txt
 
 # 
-COPY ./app /code/app
+COPY ./app /app
+COPY ./processed_data /processed_data
 
-# 
-CMD ["flask", "--app", "app", "run"]
+#run load_data.py
+#RUN python app/load_data.py
+
+ENV FLASK_APP=app
+
+
+# Expose port 5000
+EXPOSE 5000
+
+# Set the default command to run when the container starts
+CMD ["flask", "--app", "app/app", "run", "--host", "0.0.0.0"]

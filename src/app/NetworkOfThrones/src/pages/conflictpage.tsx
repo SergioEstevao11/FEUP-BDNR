@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import royal from '../assets/war.jpg';
 
@@ -7,7 +7,39 @@ import NodeView from '../components/nodeview'
 
 export default function ConflictPage() {
     const { id } = useParams<{ id: string }>();
-    const [active, setActive] = useState('graph');
+    const [active, setActive] = useState('table');
+    const [name, setName] = useState('');
+    const [religion, setReligion] = useState('-');
+    const [fatalities, setFatalities] = useState('-');
+    const [capital, setCapital] = useState('-');
+
+    const [results, setResults] = useState<any[]>([]);
+
+    React.useEffect(() => {
+      const fetchCountry = async () => {
+        const response = await fetch(`http://127.0.0.1:5000/getCountry/${id}`);
+        const data = await response.json();
+        setName(data.name);
+        setCapital(data.capital);
+        setReligion(data.religion);
+      };
+
+      const fetchFatalities = async () => {
+        const response = await fetch(`http://127.0.0.1:5000/getFatalities/${id}`);
+        const data = await response.json();
+        data.fatalities > 0 ? setFatalities(data.fatalities) : setFatalities('-');
+      };
+
+      fetchCountry();
+      fetchFatalities();
+    }, []);
+
+    const applyFilters = async (filters : string) => {
+      const response = await fetch(`http://127.0.0.1:5000/getFilteredCountries/${id}/${filters}/`);
+      const data = await response.json();
+
+      setResults(data);
+    };
 
     return (
       <main className=' w-full bg-white justify-center m-0'>
@@ -18,21 +50,21 @@ export default function ConflictPage() {
         <div id="royal-info" className='flex w-full m-12'>
           <img className='w-64 h-64 rounded-full object-cover my-5 mr-10' src={royal} alt="royal" />
           <div className='flex flex-col'>
-            <h1 id="royal-name" className="text-start text-janus font-bold my-12 "> England </h1>
-            <div>
-              <div className='flex justify-around items-center'>
+            <h1 id="royal-name" className="text-start text-janus font-bold my-12 "> {name} </h1>
+            <div >
+              <div className='flex items-center'>
                 <div id="royal-dinasty" className='flex mr-20'>
                   <h2 className="text-start  text-xl font-bold"> Capital: </h2>
-                  <span className=" text-start  text-xl px-3 self-center"> London </span>
+                  <span className=" text-start  text-xl px-3 self-center"> {capital} </span>
                 </div>
-                <div id="royal-ruling period" className='flex'>
+                <div id="royal-ruling period" className='flex mr-20'>
                   <h2 className="text-start  text-xl font-bold px-3"> Total Fatalities: </h2>
-                  <span className=" text-start  text-xl self-center"> 16564 </span>
+                  <span className=" text-start  text-xl self-center"> {fatalities} </span>
                 </div>
               </div>
               <div id="royal-country" className='flex mt-3'>
                   <h2 className="text-start  text-xl font-bold"> Religion: </h2>
-                  <span className=" text-start  text-xl px-3 self-center"> Protestant </span>
+                  <span className=" text-start  text-xl px-3 self-center"> {religion} </span>
               </div>
             </div>
           </div>
@@ -41,7 +73,7 @@ export default function ConflictPage() {
         <div id="royal-filter-view" className='mb-10'>
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
-              <ConflictFilters />
+              <ConflictFilters id={id} callback={applyFilters} reset={() => setResults([])}/>
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">
@@ -63,34 +95,36 @@ export default function ConflictPage() {
                   <thead className="text-white uppercase bg-janus">
                       <tr>
                         <th scope="col-6" className="px-6 py-3 text-left">
-                            Name
+                            Country
                         </th>
                         <th scope="col-2" className="px-6 py-3 text-center">
-                            Birth Year
+                            War Name
                         </th>
                         <th scope="col-2" className="px-6 py-3 text-center">
-                            Death Year
+                            Year
                         </th>
                         <th scope="col-2" className="px-6 py-3 text-center">
-                            Kinship
+                            Type
                         </th>
                       </tr>
                   </thead>
                   <tbody>
-                  <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                          Maria José
+                  {results.map((conflict) => (
+                    <tr
+                      key={conflict.year}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <th
+                        scope="row"
+                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        {conflict.country}
                       </th>
-                      <td className="px-6 py-4 text-center">
-                          2001
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                          nunca sou imortal
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                          Rainha do Mundo
-                      </td>
-                  </tr>
+                      <td className="px-6 py-4 text-center">{conflict.name}</td>
+                      <td className="px-6 py-4 text-center">{conflict.year == '' ? '-' :  parseInt(conflict.year)}</td>
+                      <td className="px-6 py-4 text-center">{conflict.type}</td>
+                    </tr>
+                  ))}
                   </tbody>
                 </table>
                 : <NodeView></NodeView>}

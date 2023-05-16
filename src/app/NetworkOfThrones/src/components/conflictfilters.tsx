@@ -1,19 +1,59 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import MultiSelect from 'multiselect-react-dropdown';
 import RangeSlider from './range';
+import Button from '@mui/material/Button';
 
-const ConflictFilters = (): JSX.Element => {
+interface ConflictProps {
+  id: string | undefined;
+  callback : (value: string) => void;
+  reset : () => void;
+}
+
+const ConflictFilters = ({callback, reset} : ConflictProps): JSX.Element => {
 
   const [expandedYear, setExpandedYear] = useState<boolean>(false);
-  const [yearValue, setYearValue] = useState([1500,1870]); // mudar para o min ano ou o ano a meio da range
+  const [yearValue, setYearValue] = useState([1100,1903]); // mudar para o min ano ou o ano a meio da range
 
   const [expandedCountry, setExpandedCountry] = useState<boolean>(false);
-  const optionsCountry = [{name: 'Option 1', value: 'option1'}, {name: 'Option 2', value: 'option2'}, {name: 'Option 3', value: 'option3'}];
+  const [optionsCountry, setOptionsCountry] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState([]);
 
   const [expandedType, setExpandedType] = useState<boolean>(false);
-  const optionsType= [{name: 'Option 1', value: 'option1'}, {name: 'Option 2', value: 'option2'}, {name: 'Option 3', value: 'option3'}];
+  const [optionsType, setOptionsType] = useState([]);
   const [selectedType, setSelectedType] = useState([]);
+
+  const resetFilters = () => {
+    setExpandedYear(false)
+    setYearValue([1100,1903])
+
+    setExpandedCountry(false)
+    setSelectedCountry([])
+
+    setExpandedType(false)
+    setSelectedType([])
+
+    reset();
+  }
+
+
+  React.useEffect(() => {
+    const fetchCountryOptions = async () => {
+      const response = await fetch(`http://127.0.0.1:5000/getCountries`);
+      const data = await response.json();
+
+      setOptionsCountry(data.result);
+    };
+
+    const fetchConflictType = async () => {
+      const response = await fetch(`http://127.0.0.1:5000/getConflictTypes`);
+      const data = await response.json();
+
+      setOptionsType(data);
+    };
+
+    fetchCountryOptions();
+    fetchConflictType();
+  }, []);
 
   const onSelectCountry = (selectedList : []) => {
     setSelectedCountry(selectedList);
@@ -39,6 +79,16 @@ const ConflictFilters = (): JSX.Element => {
   const handleToggleYear = () => {
     setExpandedYear(!expandedYear);
   };
+
+  const handleFilters = () => {
+    const filters = {
+      country : expandedCountry ?  selectedCountry : [],
+      type : expandedType ? selectedType : [],
+      year: expandedYear ? yearValue : []
+    };
+
+    callback(JSON.stringify(filters))
+  }
   
 
 
@@ -54,7 +104,7 @@ const ConflictFilters = (): JSX.Element => {
         </button>
       </h2>
       <div id="conflict-year-body" className={`${expandedYear ? '' : 'hidden'} my-2 mx-10`} aria-labelledby="conflict-year">
-        <RangeSlider year={[1458,1912]} minDistance={50} value={yearValue} setValue={setYearValue}></RangeSlider>
+        <RangeSlider year={[1000,2003]} minDistance={50} value={yearValue} setValue={setYearValue}></RangeSlider>
       </div>
       <h2 id="conflict-country">
         <button type="button" className="flex items-center justify-between w-full font-medium text-left text-gray-500  dark:border-gray-700 dark:text-gray-400" data-accordion-target="#rconflict-country-body"
@@ -81,6 +131,10 @@ const ConflictFilters = (): JSX.Element => {
       <div id="conflict-type-body" className={`${expandedType ? '' : 'hidden'}`} aria-labelledby="conflict-type">
       <MultiSelect options={optionsType} selectedValues={selectedType} onSelect={onSelectType} onRemove={onRemoveType} displayValue="name" showCheckbox={true} 
               className='w-full px-5 accent-janus'/>
+      </div>
+      <div className='m-10'>
+        <Button variant="contained" className='w-full' style={{ backgroundColor: '#108768', color: 'white'}} onClick={handleFilters}>Filter</Button>
+        <Button variant="outlined" className='w-full' style={{ borderColor: '#108768', backgroundColor: 'white', color: '#108768', marginTop: '10px'}} onClick={resetFilters}>Reset</Button>
       </div>
     </div>
   );
