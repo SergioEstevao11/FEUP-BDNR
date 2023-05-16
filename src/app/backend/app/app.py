@@ -40,13 +40,21 @@ def getFilteredRoyals(id,filters):
     print(id)
     
     if(filters['ancestors'].get('generation') != None):
-        ancestors = g.V().has('name', "Victoria Hanover").hasLabel("Royals").inE().valueMap().toList()
-        print(ancestors)
+        ancestors = g.V(id).hasLabel("Royals").repeat(__.out('related_with').dedup()).times(filters['ancestors'].get('generation')).emit().hasLabel('Royals').project("id", "name", "year_birth", "year_death").by(T.id).by("name").by("year_birth").by("year_death").toList()
+        for anc in ancestors: 
+            anc['kinship'] = str(filters['ancestors'].get('generation')) + 'º Ancestor'
+            if anc not in result: 
+                result.append(anc)
     elif(filters['ancestors'].get('year') != None):
         print('ancestors year')
 
     if(filters['descendants'].get('generation') != None):
-        print('descendants gen')
+        descendants = g.V(id).hasLabel("Royals").repeat(__.in_('related_with').dedup()).times(filters['descendants'].get('generation')).emit().hasLabel('Royals').project("id", "name", "year_birth", "year_death",).by(T.id).by("name").by("year_birth").by("year_death").toList()
+        for desc in descendants:
+            desc['kinship'] = str(filters['descendants'].get('generation')) + 'º Descendant' 
+            if desc not in result: 
+                result.append(desc)
+
     elif(filters['descendants'].get('year') != None):
         print('descendants year')
 
@@ -60,9 +68,20 @@ def getFilteredRoyals(id,filters):
 
 
     if(filters['siblings']):
-        print('ihbsi')
+        royal_id = g.V(id).hasLabel("Royals").values("id").toList()
+        parents = g.V(id).hasLabel("Royals").out('related_with').project("id").by(T.id).toList()
+        for parent in parents:
+            siblings = g.V(parent['id']).hasLabel("Royals").in_('related_with').has("id", P.neq(royal_id)).valueMap("name", "year_birth", "year_death").toList()
+            for sibling in siblings:
+                sibling['kinship'] = 'Sibling'
+                if sibling not in result: 
+                    result.append(sibling)
+        # for desc in descendants:
+        #     desc['kinship'] = str(filters['descendants'].get('generation')) + 'º Descendant' 
+        #     if desc not in result: 
+        #         result.append(desc)
         
-    print(result)
+
     return result
 
 @app.route("/getFilteredCountries/<id>/<filters>/")
@@ -109,7 +128,10 @@ def getFilteredCountries(id,filters):
 def getMonarchInfo(id):
     country = g.V(id).hasLabel("Royals").out("ruled").hasLabel("Countries").valueMap("name").toList()
     period = g.V(id).hasLabel("Royals").outE("ruled").valueMap().toList()
-    return {'year_end' : period[0]['year_end'], 'year_start' : period[0]['year_start'], 'country' : country[0]['name'][0]}
+
+    result = {'year_end' : period[0]['year_end'], 'year_start' : period[0]['year_start'], 'country' : country[0]['name'][0]} if (country and period) else []
+
+    return result
 
 @app.route("/getFatalities/<id>")
 def getFatalities(id):
