@@ -3,7 +3,7 @@ from flask_cors import CORS
 from gremlin_python.process.anonymous_traversal import traversal
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 from gremlin_python.process.traversal import P, T
-from gremlin_python.process.graph_traversal import __
+from gremlin_python.process.graph_traversal import __, has
 import json
 from urllib.parse import unquote
 
@@ -46,7 +46,11 @@ def getFilteredRoyals(id,filters):
             if anc not in result: 
                 result.append(anc)
     elif(filters['ancestors'].get('year') != None):
-        print('ancestors year')
+        ancestors = g.V(id).hasLabel("Royals").repeat(__.out('related_with').dedup()).until(__.has('year_birth', P.lt(str(filters['ancestors'].get('year')[0])))).emit(__.has('year_death', P.gt(str(filters['ancestors'].get('year')[1])))).valueMap().toList()
+        for anc in ancestors: 
+            anc['kinship'] = 'Ancestor'
+            if anc not in result: 
+                result.append(anc)
 
     if(filters['descendants'].get('generation') != None):
         descendants = g.V(id).hasLabel("Royals").repeat(__.in_('related_with').dedup()).times(filters['descendants'].get('generation')).emit().hasLabel('Royals').project("id", "name", "year_birth", "year_death",).by(T.id).by("name").by("year_birth").by("year_death").toList()
@@ -56,7 +60,11 @@ def getFilteredRoyals(id,filters):
                 result.append(desc)
 
     elif(filters['descendants'].get('year') != None):
-        print('descendants year')
+        descendants = g.V(id).hasLabel("Royals").repeat(__.in_('related_with').dedup()).until(__.has('year_birth', P.lt(str(filters['descendants'].get('year')[0])))).emit(__.has('year_death', P.gt(str(filters['descendants'].get('year')[1])))).valueMap().toList()
+        for desc in descendants:
+            desc['kinship'] = 'Descendant' 
+            if desc not in result: 
+                result.append(desc)
 
     if(filters['contemporaries'] != []):
         for contemporary in filters['contemporaries']:
@@ -76,10 +84,6 @@ def getFilteredRoyals(id,filters):
                 sibling['kinship'] = 'Sibling'
                 if sibling not in result: 
                     result.append(sibling)
-        # for desc in descendants:
-        #     desc['kinship'] = str(filters['descendants'].get('generation')) + 'º Descendant' 
-        #     if desc not in result: 
-        #         result.append(desc)
         
 
     return result
