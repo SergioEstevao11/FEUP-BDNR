@@ -38,9 +38,8 @@ def upload_edges(data_frame, col_out, verts_out, col_in, verts_in, g, label,prop
         id_out = row[col_out]
 
         vertex_in = find_vertex(verts_in,id_in)
-        print(vertex_in)
         vertex_out = find_vertex(verts_out,id_out)
-        print(vertex_out)
+
 
         if(vertex_in is None or vertex_out is None):
             continue
@@ -82,20 +81,19 @@ def main():
          sys.exit(1)
     time.sleep(1)
     g.V().drop().iterate()
-    print(g.V().toList())
     
-    # royals = upload_vertices(royals,g,"Royals")
+    royals = upload_vertices(royals,g,"Royals")
 
-    # fathers = upload_edges(related_with,"child",royals,"father",royals,g,"related_with","type","father")
-    # mothers = upload_edges(related_with,"child",royals,"mother",royals,g,"related_with","type","mother")
+    fathers = upload_edges(related_with,"child",royals,"father",royals,g,"related_with","type","father")
+    mothers = upload_edges(related_with,"child",royals,"mother",royals,g,"related_with","type","mother")
 
     countries = upload_vertices(countries,g,"Countries")
-    # wars = upload_vertices(wars,g,"Wars")
-    # conflicts = upload_vertices(conflicts,g,"Conflicts")
+    wars = upload_vertices(wars,g,"Wars")
+    conflicts = upload_vertices(conflicts,g,"Conflicts")
 
-    # ruled = upload_edges(ruled,"person_id",royals,"country_id",countries,g,"ruled",None,None)
-    # participated_in = upload_edges(participated_in,'country_id',countries,'conflict_id',conflicts,g,"participated_in",None,None)
-    # part_of = upload_edges(part_of,'conflict_id',conflicts,'war_id',wars,g,"part_of",None,None)
+    ruled = upload_edges(ruled,"person_id",royals,"country_id",countries,g,"ruled",None,None)
+    participated_in = upload_edges(participated_in,'country_id',countries,'conflict_id',conflicts,g,"participated_in",None,None)
+    part_of = upload_edges(part_of,'conflict_id',conflicts,'war_id',wars,g,"part_of",None,None)
     
 
 

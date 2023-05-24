@@ -13,7 +13,7 @@ export default function ConflictPage() {
     const [fatalities, setFatalities] = useState('-');
     const [capital, setCapital] = useState('-');
 
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setConflictResults] = useState<any[]>([]);
 
     React.useEffect(() => {
       const fetchCountry = async () => {
@@ -38,7 +38,7 @@ export default function ConflictPage() {
       const response = await fetch(`http://localhost:5000/getFilteredCountries/${id}/${filters}/`);
       const data = await response.json();
 
-      setResults(data);
+      setConflictResults(data);
     };
 
     return (
@@ -73,7 +73,7 @@ export default function ConflictPage() {
         <div id="royal-filter-view" className='mb-10'>
           <div className="grid grid-cols-3 gap-4">
             <div id="royal-filter"className="col-span-1 mt-10">
-              <ConflictFilters id={id} callback={applyFilters} reset={() => setResults([])}/>
+              <ConflictFilters id={id} callback={applyFilters} reset={() => setConflictResults([])}/>
             </div>
             <div id="royal-view" className="col-span-2">
               <div id="tabs-view" className="border-b border-gray-200 dark:border-gray-700">
@@ -111,7 +111,7 @@ export default function ConflictPage() {
                   <tbody>
                   {results.map((conflict) => (
                     <tr
-                      key={conflict.year}
+                      key={`${conflict.index}`}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                     >
                       <th
